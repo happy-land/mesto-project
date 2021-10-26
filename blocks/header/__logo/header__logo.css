@@ -1,0 +1,6 @@
+.header__logo {
+  border: 1px solid red;
+  background-image: url(../../../images/logo.svg);
+  width: 142px;
+  height: 33px;
+}
