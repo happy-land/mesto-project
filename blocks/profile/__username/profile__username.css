@@ -1,3 +1,23 @@
 .profile__username {
-  
+  grid-area: profile__username;
+  align-self: end;
+  margin: 0;
+  padding: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 42px;
+  line-height: 48px;
+  color: #fff;
+}
+
+@media screen and (max-width: 1060px) {
+  .profile__username {
+    display: inline;
+    margin: 0 auto;
+    font-size: 27px;
+    line-height: 33px;
+  }
 }

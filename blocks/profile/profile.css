@@ -1,6 +1,16 @@
 .profile {
-  border: 1px solid red;
   font-family: 'Inter', Arial, sans-serif;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
   margin: 0 auto;
   width: calc(100% - 200px*2);
+}
+
+@media screen and (max-width: 1060px) {
+  .profile {
+    /* flex-direction: column; */
+    display: block;
+    width: calc(100% - 19px*2);
+  }
 }

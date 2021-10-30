@@ -1,3 +1,18 @@
 .profile__profile-info {
+  display: grid;
+  align-items: center;
+  column-gap: 25px;
+  row-gap: 9px;
+  grid-template-columns: repeat(2, minmax(min-content, max-content));
+  grid-template-rows: repeat(2, minmax(min-content, max-content));
+  grid-template-areas:
+    "profile__username profile__edit-button"
+    "profile__description profile__description"
+}
 
+@media screen and (max-width: 1060px) {
+  .profile__profile-info {
+    display: block;
+    text-align: center;
+  }
 }
