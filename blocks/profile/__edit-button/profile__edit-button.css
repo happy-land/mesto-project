@@ -4,7 +4,7 @@
   border: 1px solid #fff;
   width: 24px;
   height: 24px;
-  background-color: #000;
+  background: transparent;
   background-image: url(../../../images/btn_edit.svg);
   background-repeat: no-repeat;
   background-position: center;
