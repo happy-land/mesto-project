@@ -5,6 +5,7 @@
   background-repeat: no-repeat;
   width: 142px;
   height: 33px;
+  margin-bottom: 41px;
 }
 
 @media screen and (max-width: 1060px) {
@@ -12,5 +13,6 @@
     width: 104px;
     height: 24px;
     margin-left: 27px;
+    margin-bottom: 32px;
   }
 }

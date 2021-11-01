@@ -4,15 +4,7 @@
   position: fixed;
   top: 0;
   margin: 0 auto;
-  width: 1280px;
-  height: 720px;
+  width: 100vw;
+  height: 100vh;
   background-color: rgba(0, 0, 0, .5);
-}
-
-@media screen and (max-width: 1060px) {
-  .popup {
-    width: 100%;
-    min-width: 320px;
-    height: 568px;
-  }
 }

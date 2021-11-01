@@ -9,7 +9,6 @@
 
 @media screen and (max-width: 1060px) {
   .profile {
-    /* flex-direction: column; */
     display: block;
     width: calc(100% - 19px*2);
   }
