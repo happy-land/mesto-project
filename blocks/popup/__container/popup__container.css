@@ -1,7 +1,6 @@
 .popup__container {
+  border: 1px solid red;
   position: relative;
-  align-self: center;
-  justify-self: center;
   width: 430px;
   padding-bottom: 37px;
   background-color: #fff;
