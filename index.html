@@ -26,48 +26,7 @@
         <button type="button" class="profile__add-button"></button>
       </section>
       <section class="cards content__cards">
-        <!-- <article class="card">
-          <img src="./images/items/karachaevsk.jpg" alt="Карачаевск" class="card__image">
-          <div class="card__content">
-            <h2 class="card__title"># Карачаевск ПРОЕКТ Место</h2>
-            <button type="button" class="card__like-button"></button>
-          </div>
-        </article>
-        <article class="card">
-          <img src="./images/items/elbrus.jpg" alt="Гора Эльбрус" class="card__image">
-          <div class="card__content">
-            <h2 class="card__title">Гора Эльбрус</h2>
-            <button type="button" class="card__like-button"></button>
-          </div>
-        </article>
-        <article class="card">
-          <img src="./images/items/dombai.jpg" alt="Домбай" class="card__image">
-          <div class="card__content">
-            <h2 class="card__title">Домбай</h2>
-            <button type="button" class="card__like-button"></button>
-          </div>
-        </article>
-        <article class="card">
-          <img src="./images/items/elbrus.jpg" alt="Гора Эльбрус" class="card__image">
-          <div class="card__content">
-            <h2 class="card__title">Гора Эльбрус</h2>
-            <button type="button" class="card__like-button"></button>
-          </div>
-        </article>
-        <article class="card">
-          <img src="./images/items/dombai.jpg" alt="Домбай" class="card__image">
-          <div class="card__content">
-            <h2 class="card__title">Домбай</h2>
-            <button type="button" class="card__like-button"></button>
-          </div>
-        </article>
-        <article class="card">
-          <img src="./images/items/karachaevsk.jpg" alt="Карачаевск" class="card__image">
-          <div class="card__content">
-            <h2 class="card__title">Карачаево-Черкесия</h2>
-            <button type="button" class="card__like-button"></button>
-          </div>
-        </article> -->
+        <!-- карточки подгружаются из JS -->
       </section>
     </main>
     <footer class="footer page__footer">
@@ -75,7 +34,7 @@
     </footer>
   </div>
 
-  <!-- popup_opened модификатор -->
+  <!-- Попап - редактирование профиля -->
   <div class="popup popup_type_profile-edit">
     <div class="popup__container">
       <button type="button" class="popup__close-button"></button>
@@ -90,6 +49,7 @@
     </div>
   </div>
 
+  <!-- Попап - новое место -->
   <div class="popup popup_type_place-new">
     <div class="popup__container">
       <button type="button" class="popup__close-button"></button>
@@ -103,9 +63,19 @@
     </div>
   </div>
 
+  <!-- Попап - просмотр фото -->
+  <div class="popup popup_type_photo-view">
+    <div class="popup__container popup__container_type_photo-view">
+      <button type="button" class="popup__close-button"></button>
+      <!-- картинка подгружается из JS -->
+    </div>
+  </div>
+
+  <!-- шаблон блока карточки -->
   <template id="card-template">
     <article class="card">
       <img src="#" alt="template alt" class="card__image">
+      <button type="button" class="card__trash-icon"></button>
       <div class="card__content">
         <h2 class="card__title"></h2>
         <button type="button" class="card__like-button"></button>
@@ -113,8 +83,14 @@
     </article>
   </template>
 
+  <!-- шаблон блока просмотра фото -->
+  <template id="photo-view-template">
+    <figure class="photo-view">
+      <img src="#" alt="" class="photo-view__image">
+      <figcaption class="photo-view__title"></figcaption>
+    </figure>
+  </template>
 
   <script src="./pages/index.js"></script>
 </body>
-
 </html>
