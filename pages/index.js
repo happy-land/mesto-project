@@ -48,7 +48,7 @@ let cards = [];
 // Форма редактирования новой карточки
 const placeNewFormElement = popupPlaceNewElement.querySelector('form');
 const placeInput = document.querySelector('#place');
-const imageUrlInput = document.querySelector('#imagelink');
+const imageUrlInput = document.querySelector('#image-link');
 
 
 /* **********************    Попапы   ********************** */
