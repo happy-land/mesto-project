@@ -5,8 +5,12 @@ const popupProfileEditElement = document.querySelector('.popup_type_profile-edit
 const popupPlaceNewElement = document.querySelector('.popup_type_place-new');
 
 // Кнопки
-const editProfileButtonElement = document.querySelector('.profile__edit-button');
+const editProfileButton = document.querySelector('.profile__edit-button');
 const addPlaceButtonElement = document.querySelector('.profile__add-button');
+
+// Сохраним в переменные значения полей из профиля - имя пользователя и описание
+const profileUsername = document.querySelector('.profile__username');
+const profileDescription = document.querySelector('.profile__description');
 
 // Форма редактирования профиля
 const profileEditFormElement = document.querySelector('.form_type_profile-edit');
@@ -31,8 +35,10 @@ const openPopupHandler = (popup) => {
   popup.classList.add('popup_opened');
 }
 
-editProfileButtonElement.addEventListener('click', () => {
+editProfileButton.addEventListener('click', () => {
   openPopupHandler(popupProfileEditElement);
+  nameInput.value = profileUsername.textContent;
+  jobInput.value = profileDescription.textContent;
 });
 
 addPlaceButtonElement.addEventListener('click', () => {
@@ -56,12 +62,10 @@ popups.forEach(popup => {
 const profileEditSubmitHandler = (event) => {
   event.preventDefault();
 
-  // выбрать profile__username и вставить значение nameInput.value
-  const profileUsername = document.querySelector('.profile__username');
+  // вставить значение nameInput.value
   profileUsername.textContent = nameInput.value;
 
-  // выбрать profile__description и вставить значение jobInput.value
-  const profileDescription = document.querySelector('.profile__description');
+  // вставить значение jobInput.value
   profileDescription.textContent = jobInput.value;
 
   // закрываем попап
@@ -77,19 +81,16 @@ profileEditFormElement.addEventListener('submit', profileEditSubmitHandler);
 
 // функция добавляет или удаляет лайк
 const toggleLikeHandler = (event) => {
-  event.preventDefault();
   event.target.classList.toggle('card__like-button_active');
 }
 
 // функция удаляет карточку (по родителю кнопки)
 const removeCardHandler = (event) => {
-  event.preventDefault();
   event.target.closest('.card').remove();
 }
 
-//
+// открыть попап с фото
 const showImageHandler = (cardTitle, cardUrl) => {
-  // открыть попап с фото
   const popupPhotoViewElement = document.querySelector('.popup_type_photo-view');
   openPopupHandler(popupPhotoViewElement);
 
@@ -97,11 +98,12 @@ const showImageHandler = (cardTitle, cardUrl) => {
 
   const photoViewElement = popupContainer.querySelector('.photo-view');
 
-  photoViewElement.querySelector('.photo-view__image').src = cardUrl;
-  photoViewElement.querySelector('.photo-view__image').alt = cardTitle;
-  photoViewElement.querySelector('.photo-view__title').textContent = cardTitle;
+  const image = photoViewElement.querySelector('.photo-view__image');
+  const title = photoViewElement.querySelector('.photo-view__title');
 
-  popupContainer.append(photoViewElement);
+  image.src = cardUrl;
+  image.alt = cardTitle;
+  title.textContent = cardTitle;
 }
 
 // функция задает обработчики всем кнопкам карточки,
@@ -122,9 +124,12 @@ const setEventListeners = (element, cardTitle, cardUrl) => {
 // функция создает карточку
 const createCard = (cardTitle, cardUrl) => {
   const element = cardTemplate.querySelector('.card').cloneNode(true);
-  element.querySelector('.card__title').textContent = cardTitle;
-  element.querySelector('.card__image').src = cardUrl;
-  element.querySelector('.card__image').alt = cardTitle;
+  const title = element.querySelector('.card__title');
+  const image = element.querySelector('.card__image');
+
+  title.textContent = cardTitle;
+  image.src = cardUrl;
+  image.alt = cardTitle;
 
   // навесить обработчики
   setEventListeners(element, cardTitle, cardUrl);
@@ -163,6 +168,6 @@ placeNewFormElement.addEventListener('submit', placeNewSubmitHandler);
 
 // Шесть карточек из коробки
 initialCards.forEach(element => {
-  let card = createCard(element.name, element.link);
+  const card = createCard(element.name, element.link);
   renderCard(card);
 });
