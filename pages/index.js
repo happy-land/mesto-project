@@ -4,6 +4,10 @@ const popups = document.querySelectorAll('.popup');
 const popupProfileEditElement = document.querySelector('.popup_type_profile-edit');
 const popupPlaceNewElement = document.querySelector('.popup_type_place-new');
 
+// контейнеры попапов
+const popupContainerProfileEdit = popupProfileEditElement.querySelector('.popup__container');
+const popupContainerPlaceNew = popupPlaceNewElement.querySelector('.popup__container');
+
 // Кнопки
 const editProfileButton = document.querySelector('.profile__edit-button');
 const addPlaceButtonElement = document.querySelector('.profile__add-button');
@@ -73,6 +77,25 @@ const profileEditSubmitHandler = (event) => {
 }
 
 profileEditFormElement.addEventListener('submit', profileEditSubmitHandler);
+
+
+//  Функционал закрытия попапов при клике по полупрозрачной области
+// остановить распространение всплытия
+popupContainerProfileEdit.addEventListener('click', (event) => {
+  event.stopPropagation();
+});
+
+popupContainerPlaceNew.addEventListener('click', (event) => {
+  event.stopPropagation();
+});
+
+popupProfileEditElement.addEventListener('click', () => {
+  closePopupHandler(popupProfileEditElement);
+});
+
+popupPlaceNewElement.addEventListener('click', () => {
+  closePopupHandler(popupPlaceNewElement);
+});
 
 
 /* **********************    Карточки   ********************** */
