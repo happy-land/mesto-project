@@ -3,6 +3,7 @@ const popups = document.querySelectorAll('.popup');
 
 const popupProfileEditElement = document.querySelector('.popup_type_profile-edit');
 const popupPlaceNewElement = document.querySelector('.popup_type_place-new');
+const popupPhotoViewElement = document.querySelector('.popup_type_photo-view');
 
 // контейнеры попапов
 const popupContainerProfileEdit = popupProfileEditElement.querySelector('.popup__container');
@@ -114,7 +115,7 @@ const removeCardHandler = (event) => {
 
 // открыть попап с фото
 const showImageHandler = (cardTitle, cardUrl) => {
-  const popupPhotoViewElement = document.querySelector('.popup_type_photo-view');
+  
   openPopupHandler(popupPhotoViewElement);
 
   const popupContainer = popupPhotoViewElement.querySelector('.popup__container');
