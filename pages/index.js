@@ -1,6 +1,7 @@
 // Массив попапов
 const popups = document.querySelectorAll('.popup');
 
+
 const popupProfileEditElement = document.querySelector('.popup_type_profile-edit');
 const popupPlaceNewElement = document.querySelector('.popup_type_place-new');
 const popupPhotoViewElement = document.querySelector('.popup_type_photo-view');
@@ -54,6 +55,7 @@ addPlaceButtonElement.addEventListener('click', () => {
 const closePopupHandler = (popup) => {
   popup.classList.remove('popup_opened');
 }
+
 // выбрать кнопки закрытия у всех модальных окон
 // и повесить обработчик закрытия окна при клике - closePopupHandler
 popups.forEach(popup => {
@@ -62,7 +64,30 @@ popups.forEach(popup => {
     .addEventListener('click', () => {
       closePopupHandler(popup);
     });
+
+  const popupContainer = popup.querySelector('.popup__container');
+  // остановить всплытие
+  popupContainer.addEventListener('click', (event) => {
+    event.stopPropagation(event);
+  });
+
+  // закрываем попапы при клике по оверлею
+  popup.addEventListener('click', () => {
+    closePopupHandler(popup);
+  });
 });
+
+// закрываем попапы при нажатии Esc
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape') {
+    popups.forEach(popup => {
+      if (popup.classList.contains('popup_opened')) {
+        closePopupHandler(popup);
+      }
+    });
+  }
+});
+
 
 const profileEditSubmitHandler = (event) => {
   event.preventDefault();
@@ -78,25 +103,6 @@ const profileEditSubmitHandler = (event) => {
 }
 
 profileEditFormElement.addEventListener('submit', profileEditSubmitHandler);
-
-
-//  Функционал закрытия попапов при клике по полупрозрачной области
-// остановить распространение всплытия
-popupContainerProfileEdit.addEventListener('click', (event) => {
-  event.stopPropagation();
-});
-
-popupContainerPlaceNew.addEventListener('click', (event) => {
-  event.stopPropagation();
-});
-
-popupProfileEditElement.addEventListener('click', () => {
-  closePopupHandler(popupProfileEditElement);
-});
-
-popupPlaceNewElement.addEventListener('click', () => {
-  closePopupHandler(popupPlaceNewElement);
-});
 
 
 /* **********************    Карточки   ********************** */
