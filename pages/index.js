@@ -1,13 +1,13 @@
 // Массив попапов
 const popups = document.querySelectorAll('.popup');
 
-
 const popupProfileEditElement = document.querySelector('.popup_type_profile-edit');
 const popupPlaceNewElement = document.querySelector('.popup_type_place-new');
 const popupPhotoViewElement = document.querySelector('.popup_type_photo-view');
 
 // контейнеры попапов
-const popupContainerProfileEdit = popupProfileEditElement.querySelector('.popup__container');
+const popupContainerProfileEdit =
+  popupProfileEditElement.querySelector('.popup__container');
 const popupContainerPlaceNew = popupPlaceNewElement.querySelector('.popup__container');
 
 // Кнопки
@@ -19,27 +19,26 @@ const profileUsername = document.querySelector('.profile__username');
 const profileDescription = document.querySelector('.profile__description');
 
 // Форма редактирования профиля
-const profileEditFormElement = document.querySelector('.form_type_profile-edit');
-const nameInput = document.querySelector('.form__input_type_username');
-const jobInput = document.querySelector('.form__input_type_description');
+const editProfileForm = document.forms.editprofileform;
+const nameInput = editProfileForm.elements.username;
+const jobInput = editProfileForm.elements.description;
 
 const cardsContainer = document.querySelector('.cards');
 
 // Форма редактирования новой карточки
-const placeNewFormElement = popupPlaceNewElement.querySelector('form');
-const placeInput = document.querySelector('#place');
-const imageUrlInput = document.querySelector('#image-link');
+const newPlaceForm = document.forms.newplaceform;
+const placeInput = newPlaceForm.elements.place;
+const imageUrlInput = newPlaceForm.elements.imagelink;
 
 // Шаблон карточки - берем из html
 const cardTemplate = document.querySelector('#card-template').content;
-
 
 /* **********************    Попапы   ********************** */
 
 // Функция открывает попап
 const openPopupHandler = (popup) => {
   popup.classList.add('popup_opened');
-}
+};
 
 editProfileButton.addEventListener('click', () => {
   openPopupHandler(popupProfileEditElement);
@@ -54,16 +53,15 @@ addPlaceButtonElement.addEventListener('click', () => {
 // Функция закрывает попап
 const closePopupHandler = (popup) => {
   popup.classList.remove('popup_opened');
-}
+};
 
 // выбрать кнопки закрытия у всех модальных окон
 // и повесить обработчик закрытия окна при клике - closePopupHandler
-popups.forEach(popup => {
+popups.forEach((popup) => {
   const buttonPopupCloseElement = popup.querySelector('.popup__close-button');
-  buttonPopupCloseElement
-    .addEventListener('click', () => {
-      closePopupHandler(popup);
-    });
+  buttonPopupCloseElement.addEventListener('click', () => {
+    closePopupHandler(popup);
+  });
 
   const popupContainer = popup.querySelector('.popup__container');
   // остановить всплытие
@@ -80,14 +78,13 @@ popups.forEach(popup => {
 // закрываем попапы при нажатии Esc
 document.addEventListener('keydown', (event) => {
   if (event.key === 'Escape') {
-    popups.forEach(popup => {
+    popups.forEach((popup) => {
       if (popup.classList.contains('popup_opened')) {
         closePopupHandler(popup);
       }
     });
   }
 });
-
 
 const profileEditSubmitHandler = (event) => {
   event.preventDefault();
@@ -100,10 +97,9 @@ const profileEditSubmitHandler = (event) => {
 
   // закрываем попап
   closePopupHandler(popupProfileEditElement);
-}
+};
 
-profileEditFormElement.addEventListener('submit', profileEditSubmitHandler);
-
+editProfileForm.addEventListener('submit', profileEditSubmitHandler);
 
 /* **********************    Карточки   ********************** */
 
@@ -112,16 +108,15 @@ profileEditFormElement.addEventListener('submit', profileEditSubmitHandler);
 // функция добавляет или удаляет лайк
 const toggleLikeHandler = (event) => {
   event.target.classList.toggle('card__like-button_active');
-}
+};
 
 // функция удаляет карточку (по родителю кнопки)
 const removeCardHandler = (event) => {
   event.target.closest('.card').remove();
-}
+};
 
 // открыть попап с фото
 const showImageHandler = (cardTitle, cardUrl) => {
-  
   openPopupHandler(popupPhotoViewElement);
 
   const popupContainer = popupPhotoViewElement.querySelector('.popup__container');
@@ -134,7 +129,7 @@ const showImageHandler = (cardTitle, cardUrl) => {
   image.src = cardUrl;
   image.alt = cardTitle;
   title.textContent = cardTitle;
-}
+};
 
 // функция задает обработчики всем кнопкам карточки,
 // и обработчик клика по картинке (просмотр фото)
@@ -148,7 +143,7 @@ const setEventListeners = (element, cardTitle, cardUrl) => {
   imageElement.addEventListener('click', () => {
     showImageHandler(cardTitle, cardUrl);
   });
-}
+};
 
 /* **********************    Добавить новую карточку  ********************** */
 // функция создает карточку
@@ -165,7 +160,7 @@ const createCard = (cardTitle, cardUrl) => {
   setEventListeners(element, cardTitle, cardUrl);
 
   return element;
-}
+};
 
 // функция добавляет карточку в DOM
 // пользовательские карточки - в начало контейнера (position = start)
@@ -178,8 +173,7 @@ const renderCard = (element, position = 'end') => {
       cardsContainer.prepend(element);
       break;
   }
-}
-
+};
 
 /* *****************    Добавление новой карточки по клику на +   ***************** */
 
@@ -189,15 +183,132 @@ const placeNewSubmitHandler = (event) => {
   const newCard = createCard(placeInput.value, imageUrlInput.value);
   renderCard(newCard, 'start');
 
+  // очищаем форму
+  newPlaceForm.reset();
+
   // закрываем попап
   closePopupHandler(popupPlaceNewElement);
-}
+};
 
-placeNewFormElement.addEventListener('submit', placeNewSubmitHandler);
-
+newPlaceForm.addEventListener('submit', placeNewSubmitHandler);
 
 // Шесть карточек из коробки
-initialCards.forEach(element => {
+initialCards.forEach((element) => {
   const card = createCard(element.name, element.link);
   renderCard(card);
+});
+
+// Валидация формы Редактирование профиля
+
+const showInputError = (
+  formElement,
+  inputElement,
+  errorMessage,
+  inputErrorClass,
+  errorClass
+) => {
+  const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
+  inputElement.classList.add(inputErrorClass); // красная рамка инпута
+
+  errorElement.textContent = errorMessage;
+  errorElement.classList.add(errorClass);
+};
+
+const hideInputError = (formElement, inputElement, inputErrorClass, errorClass) => {
+  const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
+  inputElement.classList.remove(inputErrorClass);
+
+  errorElement.classList.remove(errorClass);
+
+  errorElement.textContent = ' ';
+};
+
+const checkInputValidity = (formElement, inputElement, inputErrorClass, errorClass) => {
+  if (!inputElement.validity.valid) {
+    showInputError(
+      formElement,
+      inputElement,
+      inputElement.validationMessage,
+      inputErrorClass,
+      errorClass
+    );
+  } else {
+    hideInputError(formElement, inputElement, inputErrorClass, errorClass);
+  }
+};
+
+const hasInvalidInput = (inputList) => {
+  return inputList.some((inputElement) => {
+    return !inputElement.validity.valid;
+  });
+};
+
+const toggleButtonState = (inputList, buttonElement, inactiveButtonClass) => {
+  if (hasInvalidInput(inputList)) {
+    console.log('hasInvalidInput = true');
+    buttonElement.classList.add(inactiveButtonClass);
+    buttonElement.disabled = true;
+  } else {
+    buttonElement.classList.remove(inactiveButtonClass);
+    buttonElement.disabled = false;
+  }
+};
+
+const setEventListenersValidate = (
+  formElement,
+  inputSelector,
+  submitButtonSelector,
+  inactiveButtonClass,
+  inputErrorClass,
+  errorClass
+) => {
+  const inputList = Array.from(formElement.querySelectorAll(inputSelector));
+
+  // Найдём в текущей форме кнопку отправки
+  const buttonElement = formElement.querySelector(submitButtonSelector);
+
+  inputList.forEach((inputElement) => {
+    inputElement.addEventListener('input', function () {
+      checkInputValidity(formElement, inputElement, inputErrorClass, errorClass);
+      toggleButtonState(inputList, buttonElement, inactiveButtonClass);
+    });
+  });
+
+  // Вызовем toggleButtonState, чтобы не ждать ввода данных в поля
+  toggleButtonState(inputList, buttonElement, inactiveButtonClass);
+};
+
+const enableValidation = ({
+  formSelector,
+  inputSelector,
+  submitButtonSelector,
+  inactiveButtonClass,
+  inputErrorClass,
+  errorClass,
+}) => {
+  const formList = Array.from(document.querySelectorAll(formSelector));
+  formList.forEach((formElement) => {
+    console.log(formElement);
+    formElement.addEventListener('submit', function (evt) {
+      evt.preventDefault();
+    });
+
+    setEventListenersValidate(
+      formElement,
+      inputSelector,
+      submitButtonSelector,
+      inactiveButtonClass,
+      inputErrorClass,
+      errorClass
+    );
+  });
+};
+
+enableValidation({
+  formSelector: '.popup__form',
+  inputSelector: '.popup__input',
+  submitButtonSelector: '.popup__button',
+  inactiveButtonClass: 'popup__button_disabled',
+  inputErrorClass: 'popup__input_type_error',
+  errorClass: 'popup__error_visible',
 });
