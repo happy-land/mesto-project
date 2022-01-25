@@ -1,14 +1,12 @@
+import { enableValidation } from '../components/validate.js';
+import { createCard, renderCard } from '../components/card.js';
+import { openPopupHandler, closePopupHandler } from '../components/modal.js';
+
 // Массив попапов
 const popups = document.querySelectorAll('.popup');
 
 const popupProfileEditElement = document.querySelector('.popup_type_profile-edit');
 const popupPlaceNewElement = document.querySelector('.popup_type_place-new');
-const popupPhotoViewElement = document.querySelector('.popup_type_photo-view');
-
-// контейнеры попапов
-const popupContainerProfileEdit =
-  popupProfileEditElement.querySelector('.popup__container');
-const popupContainerPlaceNew = popupPlaceNewElement.querySelector('.popup__container');
 
 // Кнопки
 const editProfileButton = document.querySelector('.profile__edit-button');
@@ -23,22 +21,12 @@ const editProfileForm = document.forms.editprofileform;
 const nameInput = editProfileForm.elements.username;
 const jobInput = editProfileForm.elements.description;
 
-const cardsContainer = document.querySelector('.cards');
-
 // Форма редактирования новой карточки
 const newPlaceForm = document.forms.newplaceform;
 const placeInput = newPlaceForm.elements.place;
 const imageUrlInput = newPlaceForm.elements.imagelink;
 
-// Шаблон карточки - берем из html
-const cardTemplate = document.querySelector('#card-template').content;
-
 /* **********************    Попапы   ********************** */
-
-// Функция открывает попап
-const openPopupHandler = (popup) => {
-  popup.classList.add('popup_opened');
-};
 
 editProfileButton.addEventListener('click', () => {
   openPopupHandler(popupProfileEditElement);
@@ -49,11 +37,6 @@ editProfileButton.addEventListener('click', () => {
 addPlaceButtonElement.addEventListener('click', () => {
   openPopupHandler(popupPlaceNewElement);
 });
-
-// Функция закрывает попап
-const closePopupHandler = (popup) => {
-  popup.classList.remove('popup_opened');
-};
 
 // выбрать кнопки закрытия у всех модальных окон
 // и повесить обработчик закрытия окна при клике - closePopupHandler
@@ -101,80 +84,6 @@ const profileEditSubmitHandler = (event) => {
 
 editProfileForm.addEventListener('submit', profileEditSubmitHandler);
 
-/* **********************    Карточки   ********************** */
-
-/* *****************    Лайк карточки + удалить карточку + клик по картинке ***************** */
-
-// функция добавляет или удаляет лайк
-const toggleLikeHandler = (event) => {
-  event.target.classList.toggle('card__like-button_active');
-};
-
-// функция удаляет карточку (по родителю кнопки)
-const removeCardHandler = (event) => {
-  event.target.closest('.card').remove();
-};
-
-// открыть попап с фото
-const showImageHandler = (cardTitle, cardUrl) => {
-  openPopupHandler(popupPhotoViewElement);
-
-  const popupContainer = popupPhotoViewElement.querySelector('.popup__container');
-
-  const photoViewElement = popupContainer.querySelector('.photo-view');
-
-  const image = photoViewElement.querySelector('.photo-view__image');
-  const title = photoViewElement.querySelector('.photo-view__title');
-
-  image.src = cardUrl;
-  image.alt = cardTitle;
-  title.textContent = cardTitle;
-};
-
-// функция задает обработчики всем кнопкам карточки,
-// и обработчик клика по картинке (просмотр фото)
-const setEventListeners = (element, cardTitle, cardUrl) => {
-  const likeButtonElement = element.querySelector('.card__like-button');
-  const trashButtonElement = element.querySelector('.card__trash-icon');
-  const imageElement = element.querySelector('.card__image');
-
-  likeButtonElement.addEventListener('click', toggleLikeHandler);
-  trashButtonElement.addEventListener('click', removeCardHandler);
-  imageElement.addEventListener('click', () => {
-    showImageHandler(cardTitle, cardUrl);
-  });
-};
-
-/* **********************    Добавить новую карточку  ********************** */
-// функция создает карточку
-const createCard = (cardTitle, cardUrl) => {
-  const element = cardTemplate.querySelector('.card').cloneNode(true);
-  const title = element.querySelector('.card__title');
-  const image = element.querySelector('.card__image');
-
-  title.textContent = cardTitle;
-  image.src = cardUrl;
-  image.alt = cardTitle;
-
-  // навесить обработчики
-  setEventListeners(element, cardTitle, cardUrl);
-
-  return element;
-};
-
-// функция добавляет карточку в DOM
-// пользовательские карточки - в начало контейнера (position = start)
-const renderCard = (element, position = 'end') => {
-  switch (position) {
-    case 'end':
-      cardsContainer.append(element);
-      break;
-    case 'start':
-      cardsContainer.prepend(element);
-      break;
-  }
-};
-
 /* *****************    Добавление новой карточки по клику на +   ***************** */
 
 const placeNewSubmitHandler = (event) => {
@@ -198,111 +107,7 @@ initialCards.forEach((element) => {
   renderCard(card);
 });
 
-// Валидация формы Редактирование профиля
-
-const showInputError = (
-  formElement,
-  inputElement,
-  errorMessage,
-  inputErrorClass,
-  errorClass
-) => {
-  const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
-  inputElement.classList.add(inputErrorClass); // красная рамка инпута
-
-  errorElement.textContent = errorMessage;
-  errorElement.classList.add(errorClass);
-};
-
-const hideInputError = (formElement, inputElement, inputErrorClass, errorClass) => {
-  const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
-  inputElement.classList.remove(inputErrorClass);
-
-  errorElement.classList.remove(errorClass);
-
-  errorElement.textContent = ' ';
-};
-
-const checkInputValidity = (formElement, inputElement, inputErrorClass, errorClass) => {
-  if (!inputElement.validity.valid) {
-    showInputError(
-      formElement,
-      inputElement,
-      inputElement.validationMessage,
-      inputErrorClass,
-      errorClass
-    );
-  } else {
-    hideInputError(formElement, inputElement, inputErrorClass, errorClass);
-  }
-};
-
-const hasInvalidInput = (inputList) => {
-  return inputList.some((inputElement) => {
-    return !inputElement.validity.valid;
-  });
-};
-
-const toggleButtonState = (inputList, buttonElement, inactiveButtonClass) => {
-  if (hasInvalidInput(inputList)) {
-    console.log('hasInvalidInput = true');
-    buttonElement.classList.add(inactiveButtonClass);
-    buttonElement.disabled = true;
-  } else {
-    buttonElement.classList.remove(inactiveButtonClass);
-    buttonElement.disabled = false;
-  }
-};
-
-const setEventListenersValidate = (
-  formElement,
-  inputSelector,
-  submitButtonSelector,
-  inactiveButtonClass,
-  inputErrorClass,
-  errorClass
-) => {
-  const inputList = Array.from(formElement.querySelectorAll(inputSelector));
-
-  // Найдём в текущей форме кнопку отправки
-  const buttonElement = formElement.querySelector(submitButtonSelector);
-
-  inputList.forEach((inputElement) => {
-    inputElement.addEventListener('input', function () {
-      checkInputValidity(formElement, inputElement, inputErrorClass, errorClass);
-      toggleButtonState(inputList, buttonElement, inactiveButtonClass);
-    });
-  });
-
-  // Вызовем toggleButtonState, чтобы не ждать ввода данных в поля
-  toggleButtonState(inputList, buttonElement, inactiveButtonClass);
-};
-
-const enableValidation = ({
-  formSelector,
-  inputSelector,
-  submitButtonSelector,
-  inactiveButtonClass,
-  inputErrorClass,
-  errorClass,
-}) => {
-  const formList = Array.from(document.querySelectorAll(formSelector));
-  formList.forEach((formElement) => {
-    console.log(formElement);
-    formElement.addEventListener('submit', function (evt) {
-      evt.preventDefault();
-    });
-
-    setEventListenersValidate(
-      formElement,
-      inputSelector,
-      submitButtonSelector,
-      inactiveButtonClass,
-      inputErrorClass,
-      errorClass
-    );
-  });
-};
+// Валидация форм
 
 enableValidation({
   formSelector: '.popup__form',
