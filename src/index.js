@@ -1,9 +1,11 @@
-import { enableValidation } from '../components/validate.js';
-import { createCard, renderCard } from '../components/card.js';
-import { openPopupHandler, closePopupHandler } from '../components/modal.js';
+import { createCard, renderCard } from './components/card.js';
+import { openPopupHandler, closePopupHandler } from './components/modal.js';
+import { enableValidation } from './components/validate.js';
+import { initialCards } from './scripts/initial-cards.js';
+import './pages/index.css';
 
 // Массив попапов
-const popups = document.querySelectorAll('.popup');
+export const popups = document.querySelectorAll('.popup');
 
 const popupProfileEditElement = document.querySelector('.popup_type_profile-edit');
 const popupPlaceNewElement = document.querySelector('.popup_type_place-new');
@@ -11,6 +13,9 @@ const popupPlaceNewElement = document.querySelector('.popup_type_place-new');
 // Кнопки
 const editProfileButton = document.querySelector('.profile__edit-button');
 const addPlaceButtonElement = document.querySelector('.profile__add-button');
+
+// Кнопки submit форм
+// const
 
 // Сохраним в переменные значения полей из профиля - имя пользователя и описание
 const profileUsername = document.querySelector('.profile__username');
@@ -29,9 +34,10 @@ const imageUrlInput = newPlaceForm.elements.imagelink;
 /* **********************    Попапы   ********************** */
 
 editProfileButton.addEventListener('click', () => {
-  openPopupHandler(popupProfileEditElement);
+  
   nameInput.value = profileUsername.textContent;
   jobInput.value = profileDescription.textContent;
+  openPopupHandler(popupProfileEditElement);
 });
 
 addPlaceButtonElement.addEventListener('click', () => {
@@ -59,15 +65,15 @@ popups.forEach((popup) => {
 });
 
 // закрываем попапы при нажатии Esc
-document.addEventListener('keydown', (event) => {
-  if (event.key === 'Escape') {
-    popups.forEach((popup) => {
-      if (popup.classList.contains('popup_opened')) {
-        closePopupHandler(popup);
-      }
-    });
-  }
-});
+// document.addEventListener('keydown', (event) => {
+//   if (event.key === 'Escape') {
+//     popups.forEach((popup) => {
+//       if (popup.classList.contains('popup_opened')) {
+//         closePopupHandler(popup);
+//       }
+//     });
+//   }
+// });
 
 const profileEditSubmitHandler = (event) => {
   event.preventDefault();
@@ -108,12 +114,13 @@ initialCards.forEach((element) => {
 });
 
 // Валидация форм
-
-enableValidation({
+export const validationConfig = {
   formSelector: '.popup__form',
   inputSelector: '.popup__input',
   submitButtonSelector: '.popup__button',
   inactiveButtonClass: 'popup__button_disabled',
   inputErrorClass: 'popup__input_type_error',
   errorClass: 'popup__error_visible',
-});
+}
+
+enableValidation(validationConfig);

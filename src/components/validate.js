@@ -20,7 +20,7 @@ const hideInputError = (formElement, inputElement, inputErrorClass, errorClass) 
 
   errorElement.classList.remove(errorClass);
 
-  errorElement.textContent = ' ';
+  errorElement.textContent = '';
 };
 
 const checkInputValidity = (formElement, inputElement, inputErrorClass, errorClass) => {
@@ -43,9 +43,8 @@ const hasInvalidInput = (inputList) => {
   });
 };
 
-const toggleButtonState = (inputList, buttonElement, inactiveButtonClass) => {
+export const toggleButtonState = (inputList, buttonElement, inactiveButtonClass) => {
   if (hasInvalidInput(inputList)) {
-    // console.log('hasInvalidInput = true');
     buttonElement.classList.add(inactiveButtonClass);
     buttonElement.disabled = true;
   } else {
@@ -67,6 +66,9 @@ const setEventListenersValidate = (
   // Найдём в текущей форме кнопку отправки
   const buttonElement = formElement.querySelector(submitButtonSelector);
 
+  // Вызовем toggleButtonState, чтобы не ждать ввода данных в поля
+  toggleButtonState(inputList, buttonElement, inactiveButtonClass);
+
   inputList.forEach((inputElement) => {
     inputElement.addEventListener('input', function () {
       checkInputValidity(formElement, inputElement, inputErrorClass, errorClass);
@@ -74,8 +76,6 @@ const setEventListenersValidate = (
     });
   });
 
-  // Вызовем toggleButtonState, чтобы не ждать ввода данных в поля
-  toggleButtonState(inputList, buttonElement, inactiveButtonClass);
 };
 
 const enableValidation = ({
