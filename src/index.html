@@ -4,8 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Mesto - 5 месяц</title>
-    <link rel="stylesheet" href="./pages/index.css" />
+    <title>Mesto - валидация</title>
   </head>
 
   <body class="container">
@@ -16,7 +15,7 @@
       <main class="content page__content">
         <section class="profile">
           <img
-            src="./images/avatar.png"
+            src="<%=require('./images/avatar.png')%>"
             alt="Жак-Ив Кусто"
             class="profile__avatar"
           />
@@ -122,8 +121,5 @@
         </div>
       </article>
     </template>
-
-    <script src="./scripts/initial-cards.js"></script>
-    <script type="module" src="./pages/index.js"></script>
   </body>
 </html>
