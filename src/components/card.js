@@ -1,4 +1,4 @@
-import { showImageHandler } from './modal.js';
+import { showImagePopup } from './modal.js';
 
 // Шаблон карточки - берем из html
 const cardTemplate = document.querySelector('#card-template').content;
@@ -12,10 +12,10 @@ const setEventListeners = (element, cardTitle, cardUrl) => {
   const trashButtonElement = element.querySelector('.card__trash-icon');
   const imageElement = element.querySelector('.card__image');
 
-  likeButtonElement.addEventListener('click', toggleLikeHandler);
-  trashButtonElement.addEventListener('click', removeCardHandler);
+  likeButtonElement.addEventListener('click', toggleLike);
+  trashButtonElement.addEventListener('click', removeCard);
   imageElement.addEventListener('click', () => {
-    showImageHandler(cardTitle, cardUrl);
+    showImagePopup(cardTitle, cardUrl);
   });
 };
 
@@ -49,12 +49,12 @@ const renderCard = (element, position = 'end') => {
 };
 
 // функция добавляет или удаляет лайк
-const toggleLikeHandler = (event) => {
+const toggleLike = (event) => {
   event.target.classList.toggle('card__like-button_active');
 };
 
 // функция удаляет карточку (по родителю кнопки)
-const removeCardHandler = (event) => {
+const removeCard = (event) => {
   event.target.closest('.card').remove();
 };
 

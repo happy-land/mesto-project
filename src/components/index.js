@@ -1,8 +1,8 @@
-import { createCard, renderCard } from './components/card.js';
-import { openPopupHandler, closePopupHandler } from './components/modal.js';
-import { enableValidation } from './components/validate.js';
-import { initialCards } from './scripts/initial-cards.js';
-import './pages/index.css';
+import { createCard, renderCard } from './card.js';
+import { openPopup, closePopup, updateSubmitButtonState } from './modal.js';
+import { enableValidation } from './validate.js';
+import { initialCards } from '../scripts/initial-cards.js';
+import '../pages/index.css';
 
 // Массив попапов
 export const popups = document.querySelectorAll('.popup');
@@ -37,45 +37,29 @@ editProfileButton.addEventListener('click', () => {
   
   nameInput.value = profileUsername.textContent;
   jobInput.value = profileDescription.textContent;
-  openPopupHandler(popupProfileEditElement);
+  openPopup(popupProfileEditElement);
+  updateSubmitButtonState(popupProfileEditElement);
 });
 
 addPlaceButtonElement.addEventListener('click', () => {
-  openPopupHandler(popupPlaceNewElement);
+  openPopup(popupPlaceNewElement);
+  updateSubmitButtonState(popupPlaceNewElement);
 });
 
 // выбрать кнопки закрытия у всех модальных окон
-// и повесить обработчик закрытия окна при клике - closePopupHandler
+// и повесить обработчик закрытия окна при клике - closePopup
 popups.forEach((popup) => {
-  const buttonPopupCloseElement = popup.querySelector('.popup__close-button');
-  buttonPopupCloseElement.addEventListener('click', () => {
-    closePopupHandler(popup);
-  });
-
-  const popupContainer = popup.querySelector('.popup__container');
-  // остановить всплытие
-  popupContainer.addEventListener('click', (event) => {
-    event.stopPropagation(event);
-  });
-
-  // закрываем попапы при клике по оверлею
-  popup.addEventListener('click', () => {
-    closePopupHandler(popup);
+  popup.addEventListener('mousedown', (evt) => {
+    if (evt.target.classList.contains('popup_opened')) {
+      closePopup(popup);
+    }
+    if (evt.target.classList.contains('popup__close')) {
+      closePopup(popup);
+    }
   });
 });
 
-// закрываем попапы при нажатии Esc
-// document.addEventListener('keydown', (event) => {
-//   if (event.key === 'Escape') {
-//     popups.forEach((popup) => {
-//       if (popup.classList.contains('popup_opened')) {
-//         closePopupHandler(popup);
-//       }
-//     });
-//   }
-// });
-
-const profileEditSubmitHandler = (event) => {
+const handleProfileFormSubmit = (event) => {
   event.preventDefault();
 
   // вставить значение nameInput.value
@@ -85,14 +69,14 @@ const profileEditSubmitHandler = (event) => {
   profileDescription.textContent = jobInput.value;
 
   // закрываем попап
-  closePopupHandler(popupProfileEditElement);
+  closePopup(popupProfileEditElement);
 };
 
-editProfileForm.addEventListener('submit', profileEditSubmitHandler);
+editProfileForm.addEventListener('submit', handleProfileFormSubmit);
 
 /* *****************    Добавление новой карточки по клику на +   ***************** */
 
-const placeNewSubmitHandler = (event) => {
+const handleNewSubmit = (event) => {
   event.preventDefault();
 
   const newCard = createCard(placeInput.value, imageUrlInput.value);
@@ -102,10 +86,10 @@ const placeNewSubmitHandler = (event) => {
   newPlaceForm.reset();
 
   // закрываем попап
-  closePopupHandler(popupPlaceNewElement);
+  closePopup(popupPlaceNewElement);
 };
 
-newPlaceForm.addEventListener('submit', placeNewSubmitHandler);
+newPlaceForm.addEventListener('submit', handleNewSubmit);
 
 // Шесть карточек из коробки
 initialCards.forEach((element) => {

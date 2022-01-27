@@ -1,13 +1,16 @@
-import { popups, validationConfig } from '../index.js';
+import { popups, validationConfig } from './index.js';
 import { toggleButtonState } from './validate.js';
 const popupPhotoViewElement = document.querySelector('.popup_type_photo-view');
 
+const popupContainer = popupPhotoViewElement.querySelector('.popup__container');
+const photoViewElement = popupContainer.querySelector('.photo-view');
+const image = photoViewElement.querySelector('.photo-view__image');
+const title = photoViewElement.querySelector('.photo-view__title');
+
 // Функция открывает попап
-const openPopupHandler = (popup) => {
+const openPopup = (popup) => {
   popup.classList.add('popup_opened');
-  updateSubmitButtonState(popup);
-  document.addEventListener('keydown', createEscHandler);
-  // createEscHandler(popup);
+  document.addEventListener('keydown', handleEscKey);
 };
 
 // функция обновляет состояние кнопки submit при открытии попапа
@@ -22,35 +25,28 @@ const updateSubmitButtonState = (popup) => {
 };
 
 // Функция закрывает попап
-const closePopupHandler = (popup) => {
+const closePopup = (popup) => {
   popup.classList.remove('popup_opened');
-  document.removeEventListener('keydown', createEscHandler);
+  document.removeEventListener('keydown', handleEscKey);
 };
 
-const createEscHandler = (evt) => {
+const handleEscKey = (evt) => {
   if (evt.key === 'Escape') {
     popups.forEach((popup) => {
       if (popup.classList.contains('popup_opened')) {
-        closePopupHandler(popup);
+        closePopup(popup);
       }
     });
   }
 };
 
 // открыть попап с фото
-const showImageHandler = (cardTitle, cardUrl) => {
-  openPopupHandler(popupPhotoViewElement);
-
-  const popupContainer = popupPhotoViewElement.querySelector('.popup__container');
-
-  const photoViewElement = popupContainer.querySelector('.photo-view');
-
-  const image = photoViewElement.querySelector('.photo-view__image');
-  const title = photoViewElement.querySelector('.photo-view__title');
+const showImagePopup = (cardTitle, cardUrl) => {
+  openPopup(popupPhotoViewElement);
 
   image.src = cardUrl;
   image.alt = cardTitle;
   title.textContent = cardTitle;
 };
 
-export { openPopupHandler, closePopupHandler, showImageHandler };
+export { openPopup, closePopup, updateSubmitButtonState, showImagePopup };
