@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mesto - валидация</title>
+  </head>
+
+  <body class="container">
+    <div class="page">
+      <header class="header page__header">
+        <div class="header__logo"></div>
+      </header>
+      <main class="content page__content">
+        <section class="profile">
+          <img
+            src="<%=require('./images/avatar.png')%>"
+            alt="Жак-Ив Кусто"
+            class="profile__avatar"
+          />
+          <div class="profile__profile-info">
+            <h1 class="profile__username">Жак-Ив Кусто</h1>
+            <button type="button" class="profile__edit-button"></button>
+            <p class="profile__description">Исследователь океана</p>
+          </div>
+          <button type="button" class="profile__add-button"></button>
+        </section>
+        <section class="cards content__cards">
+          <!-- карточки подгружаются из JS -->
+        </section>
+      </main>
+      <footer class="footer page__footer">
+        <p class="footer__copyright">&copy;2021 Руслан Кулиш</p>
+      </footer>
+    </div>
+
+    <!-- Попап - редактирование профиля -->
+    <div class="popup popup_type_profile-edit">
+      <div class="popup__container">
+        <button type="button" class="popup__close-button"></button>
+        <h2 class="popup__title">Редактировать профиль</h2>
+        <form class="popup__form popup__form_type_profile-edit" name="editprofileform">
+          <input
+            type="text"
+            class="popup__input popup__input_type_username"
+            id="username-input"
+            name="username"
+            placeholder="Имя"
+            minlength="2"
+            maxlength="40"
+            required
+          />
+          <span class="popup__error username-input-error"></span>
+          <input
+            type="text"
+            class="popup__input popup__input_type_description"
+            id="description-input"
+            name="description"
+            placeholder="Профессия"
+            minlength="2"
+            maxlength="200"
+            required
+          />
+          <span class="popup__error description-input-error"></span>
+          <button type="submit" class="popup__button">Сохранить</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Попап - новое место -->
+    <div class="popup popup_type_place-new">
+      <div class="popup__container">
+        <button type="button" class="popup__close-button"></button>
+        <h2 class="popup__title">Новое место</h2>
+        <form class="popup__form popup__form_type_place-new" name="newplaceform">
+          <input
+            type="text"
+            class="popup__input popup__form__input_type_place"
+            id="place-input"
+            name="place"
+            placeholder="Название"
+            minlength="2"
+            maxlength="30"
+            required
+          />
+          <span class="popup__error place-input-error"></span>
+          <input
+            type="url"
+            class="popup__input popup__input_type_imagelink"
+            id="imagelink-input"
+            name="imagelink"
+            placeholder="Ссылка на картинку"
+            required
+          />
+          <span class="popup__error imagelink-input-error"></span>
+          <button type="submit" class="popup__button">Сохранить</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Попап - просмотр фото -->
+    <div class="popup popup_type_photo-view">
+      <div class="popup__container popup__container_type_photo-view">
+        <button type="button" class="popup__close-button"></button>
+        <figure class="photo-view">
+          <img src="#" alt="" class="photo-view__image" />
+          <figcaption class="photo-view__title"></figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <!-- шаблон блока карточки -->
+    <template id="card-template">
+      <article class="card">
+        <img src="#" alt="template alt" class="card__image" />
+        <button type="button" class="card__trash-icon"></button>
+        <div class="card__content">
+          <h2 class="card__title"></h2>
+          <button type="button" class="card__like-button"></button>
+        </div>
+      </article>
+    </template>
+  </body>
+</html>
