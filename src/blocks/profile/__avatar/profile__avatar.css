@@ -2,13 +2,18 @@
   border-radius: 50%;
   width: 120px;
   height: 120px;
-  margin-right: 30px;
+  
   object-fit: cover;
+  cursor: pointer;
+}
+
+.profile__avatar:hover {
+  background: rgba(0, 0, 0, 0.8);
 }
 
 @media screen and (max-width: 1060px) {
   .profile__avatar {
     display: block;
-    margin: 0 auto 26px;
+    margin: 0 auto 0;
   }
 }
