@@ -6,28 +6,23 @@ const config = {
   },
 };
 
+const getResponse = (res) => {
+  return res.ok ? res.json() : Promise.reject(res.status);
+};
+
 // получить пользователя
 const getUser = () => {
-  return (
-    fetch(`${config.baseUrl}/users/me`, {
-      headers: config.headers,
-    })
-      // .then(res => getResponseData(res));
-      .then((res) => {
-        return res.ok ? res.json() : Promise.reject(res.status);
-      })
-  );
+  return fetch(`${config.baseUrl}/users/me`, {
+    headers: config.headers,
+  }).then(getResponse);
 };
 
 // получить начальные карточки с сервера
 const getCards = () => {
   return fetch(`${config.baseUrl}/cards`, {
     headers: config.headers,
-  }).then((res) => {
-    return res.ok ? res.json() : Promise.reject(res.status);
-  });
+  }).then(getResponse);
 };
-
 
 export const getAppInfo = () => {
   return Promise.all([getUser(), getCards()]);
@@ -42,9 +37,7 @@ export const updateProfile = (name, about) => {
       name,
       about,
     }),
-  }).then((res) => {
-    return res.ok ? res.json() : Promise.reject(res.status);
-  });
+  }).then(getResponse);
 };
 
 // обновить аватар
@@ -53,11 +46,9 @@ export const updateAvatar = (avatar) => {
     method: 'PATCH',
     headers: config.headers,
     body: JSON.stringify({
-      avatar
+      avatar,
     }),
-  }).then((res) => {
-    return res.ok ? res.json() : Promise.reject(res.status);
-  });
+  }).then(getResponse);
 };
 
 // добавить новую карточку
@@ -69,9 +60,7 @@ export const addCard = (name, link) => {
       name,
       link,
     }),
-  }).then((res) => {
-    return res.ok ? res.json() : Promise.reject(res.status);
-  });
+  }).then(getResponse);
 };
 
 // удалить карточку
@@ -79,9 +68,7 @@ export const deleteCard = (cardId) => {
   return fetch(`${config.baseUrl}/cards/${cardId}`, {
     method: 'DELETE',
     headers: config.headers,
-  }).then((res) => {
-    return res.ok ? res.json() : Promise.reject(res.status);
-  });
+  }).then(getResponse);
 };
 
 // добавить лайк
@@ -89,12 +76,7 @@ export const addLike = (cardId) => {
   return fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
     method: 'PUT',
     headers: config.headers,
-    // body: JSON.stringify({
-
-    // })
-  }).then((res) => {
-    return res.ok ? res.json() : Promise.reject(res.status);
-  });
+  }).then(getResponse);
 };
 
 // удалить лайк
@@ -102,7 +84,5 @@ export const removeLike = (cardId) => {
   return fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
     method: 'DELETE',
     headers: config.headers,
-  }).then((res) => {
-    return res.ok ? res.json() : Promise.reject(res.status);
-  });
+  }).then(getResponse);
 };
