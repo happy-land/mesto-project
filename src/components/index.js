@@ -89,26 +89,20 @@ getAppInfo()
 
 // обработчики кликов на кнопки карточки
 // принимают на вход id карточки и другие ее данные, которые важны
-const handleCardLike = (cardElement, cardId, isLiked) => {
-  if (
-    cardElement
-      .querySelector('.card__like-button')
-      .classList.contains('card__like-button_active')
-  ) {
+const handleCardLike = (cardElement, cardId) => {
+  const likeButton = cardElement.querySelector('.card__like-button');
+
+  if (likeButton.classList.contains('card__like-button_active')) {
     removeLike(cardId)
       .then((card) => {
-        cardElement
-          .querySelector('.card__like-button')
-          .classList.remove('card__like-button_active');
+        likeButton.classList.remove('card__like-button_active');
         cardElement.querySelector('.card__like-counter').textContent = card.likes.length;
       })
       .catch((err) => console.log(err));
   } else {
     addLike(cardId)
       .then((card) => {
-        cardElement
-          .querySelector('.card__like-button')
-          .classList.add('card__like-button_active');
+        likeButton.classList.add('card__like-button_active');
         cardElement.querySelector('.card__like-counter').textContent = card.likes.length;
       })
       .catch((err) => console.log(err));
@@ -170,15 +164,15 @@ const handleAvatarFormSubmit = (event) => {
 
   renderLoading(true, popupAvatarEditElement);
   updateAvatar(avatarInput.value)
-  .then((userData) => {
-    avatarLogo.src = userData.avatar;
-    // закрываем попап
-    closePopup(popupAvatarEditElement);
-  })
-  .catch((err) => console.log(err))
-  .finally(() => {
-    renderLoading(false, popupAvatarEditElement);
-  })
+    .then((userData) => {
+      avatarLogo.src = userData.avatar;
+      // закрываем попап
+      closePopup(popupAvatarEditElement);
+    })
+    .catch((err) => console.log(err))
+    .finally(() => {
+      renderLoading(false, popupAvatarEditElement);
+    });
 };
 
 editAvatarForm.addEventListener('submit', handleAvatarFormSubmit);
