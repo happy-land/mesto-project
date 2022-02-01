@@ -78,15 +78,4 @@ const renderCard = (element, position = 'end') => {
   }
 };
 
-// ЭТИ ДВЕ ФУНКЦИИ toggleLike removeCard  - возможно надо будет удалить
-// функция добавляет или удаляет лайк
-// const toggleLike = (like) => {
-//   like.classList.toggle('card__like-button_active');
-// };
-
-// функция удаляет карточку (по родителю кнопки)
-// const removeCard = (event) => {
-//   event.target.closest('.card').remove();
-// };
-
 export { createCard, renderCard };

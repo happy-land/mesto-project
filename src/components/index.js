@@ -18,6 +18,7 @@ export const popups = document.querySelectorAll('.popup');
 const popupProfileEditElement = document.querySelector('.popup_type_profile-edit');
 const popupPlaceNewElement = document.querySelector('.popup_type_place-new');
 const popupAvatarEditElement = document.querySelector('.popup_type_avatar-edit');
+const popupRemoveCardElement = document.querySelector('.popup_type_remove-card');
 
 // Кнопки
 const editProfileButton = document.querySelector('.profile__edit-button');
@@ -45,6 +46,9 @@ const jobInput = editProfileForm.elements.description;
 const newPlaceForm = document.forms.newplaceform;
 const placeInput = newPlaceForm.elements.place;
 const imageUrlInput = newPlaceForm.elements.imagelink;
+
+// Форма - подтвердить удаление карточки
+const removeCardForm = document.forms.removecardform;
 
 // id текущего пользователя
 let currentUserId;
@@ -109,15 +113,27 @@ const handleCardLike = (cardElement, cardId) => {
   }
 };
 
-const handleCardDelete = (cardElement, cardId) => {
+const handleDeleteSubmit = (cardElement, cardId, event) => {
+  console.log(`event=${event}, cardElement=${cardElement}, cardId=${cardId}`);
+  event.preventDefault();
+
   deleteCard(cardId)
     .then((res) => {
       cardElement.closest('.card').remove();
+      closePopup(popupRemoveCardElement);
     })
     .catch((err) => console.log(err));
 };
 
-/* **********************    Попапы   ********************** */
+const handleCardDelete = (cardElement, cardId) => {
+  openPopup(popupRemoveCardElement);
+  // обработчик формы - подтвердить удаление карточки
+  removeCardForm.addEventListener('submit', (event) => {
+    handleDeleteSubmit(cardElement, cardId, event);
+  });
+};
+
+/* **********************    Кнопки вызова попапов   ********************** */
 
 editAvatarIcon.addEventListener('click', () => {
   openPopup(popupAvatarEditElement);
