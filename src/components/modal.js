@@ -1,4 +1,4 @@
-import { popups, validationConfig } from './index.js';
+import { popups, validationConfig } from '../pages/index.js';
 import { toggleButtonState } from './validate.js';
 const popupPhotoViewElement = document.querySelector('.popup_type_photo-view');
 

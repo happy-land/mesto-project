@@ -1,6 +1,6 @@
-import { createCard, renderCard } from './card.js';
-import { openPopup, closePopup, updateSubmitButtonState } from './modal.js';
-import { enableValidation } from './validate.js';
+import { createCard, renderCard } from '../components/card.js';
+import { openPopup, closePopup, updateSubmitButtonState } from '../components/modal.js';
+import { enableValidation } from '../components/validate.js';
 import {
   getAppInfo,
   updateProfile,
@@ -9,7 +9,7 @@ import {
   addCard,
   deleteCard,
   updateAvatar,
-} from './api.js';
+} from '../components/api.js';
 import '../pages/index.css';
 
 // Массив попапов
