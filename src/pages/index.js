@@ -1,4 +1,5 @@
 import Api from '../components/api.js';
+import { inputFieldStateCheck } from '../utils/utils.js';
 import { createCard, renderCard } from '../components/card.js';
 import { openPopup, closePopup, updateSubmitButtonState } from '../components/modal.js';
 import { enableValidation } from '../components/validate.js';
@@ -13,7 +14,6 @@ const api = new Api({
     'Content-Type': 'application/json'
     }
 });
-
 //-----------------------
 
 // Массив попапов
@@ -34,6 +34,7 @@ const addPlaceButtonElement = document.querySelector('.profile__add-button');
 
 // Сохраним в переменные значения полей из профиля - аватар, имя пользователя и описание
 const profileAvatar = document.querySelector('.profile__avatar');
+//const inputAvatar = document.querySelector('#avatar-input');
 const profileUsername = document.querySelector('.profile__username');
 const profileDescription = document.querySelector('.profile__description');
 
@@ -58,11 +59,11 @@ const removeCardForm = document.forms.removecardform;
 let currentUserId;
 
 // редактирование аватара
-const handleMouseOver = (evt) => {
+const handleMouseOver = () => {
   editAvatarIcon.classList.remove('profile__edit-avatar_hidden');
 };
 
-const handleMouseOut = (evt) => {
+const handleMouseOut = () => {
   editAvatarIcon.classList.add('profile__edit-avatar_hidden');
 };
 
@@ -70,7 +71,7 @@ avatarLogo.addEventListener('mouseover', handleMouseOver);
 avatarLogo.addEventListener('mouseout', handleMouseOut);
 
 // Загрузка данных о пользователе и массив карточек - одним промисом
-getAppInfo()
+api.getAppInfo()
   .then(([user, cardData]) => {
     profileAvatar.src = user.avatar;
     profileUsername.textContent = user.name;
@@ -140,6 +141,7 @@ const handleCardDelete = (cardElement, cardId) => {
 /* **********************    Кнопки вызова попапов   ********************** */
 
 editAvatarIcon.addEventListener('click', () => {
+  inputFieldStateCheck(popupAvatarEditElement);
   openPopup(popupAvatarEditElement);
   updateSubmitButtonState(popupAvatarEditElement);
 });
@@ -147,6 +149,7 @@ editAvatarIcon.addEventListener('click', () => {
 editProfileButton.addEventListener('click', () => {
   nameInput.value = profileUsername.textContent;
   jobInput.value = profileDescription.textContent;
+  inputFieldStateCheck(popupProfileEditElement);
   openPopup(popupProfileEditElement);
   updateSubmitButtonState(popupProfileEditElement);
 });
@@ -202,7 +205,7 @@ const handleProfileFormSubmit = (event) => {
   event.preventDefault();
 
   renderLoading(true, popupProfileEditElement);
-  updateProfile(nameInput.value, jobInput.value)
+  api.updateProfile(nameInput.value, jobInput.value)
     .then((userData) => {
       // вставить значение nameInput.value
       profileUsername.textContent = userData.name;
