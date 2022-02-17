@@ -1,16 +1,20 @@
+import Api from '../components/api.js';
 import { createCard, renderCard } from '../components/card.js';
 import { openPopup, closePopup, updateSubmitButtonState } from '../components/modal.js';
 import { enableValidation } from '../components/validate.js';
-import {
-  getAppInfo,
-  updateProfile,
-  addLike,
-  removeLike,
-  addCard,
-  deleteCard,
-  updateAvatar,
-} from '../components/api.js';
+
 import '../pages/index.css';
+
+//-----------------------
+const api = new Api({
+  baseUrl: 'https://nomoreparties.co/v1/plus-cohort-6',
+  headers: {
+    authorization: 'f3d57c75-f8a6-4acb-a0b6-75252be6dd05',
+    'Content-Type': 'application/json'
+    }
+});
+
+//-----------------------
 
 // Массив попапов
 export const popups = document.querySelectorAll('.popup');
