@@ -1,9 +1,6 @@
 import { showImagePopup } from './modal.js';
-
-// Шаблон карточки - берем из html
-const cardTemplate = document.querySelector('#card-template').content;
-
-const cardsContainer = document.querySelector('.cards');
+import { cardTemplate,
+         cardsContainer } from '../utils/constants.js';
 
 // функция задает обработчики всем кнопкам карточки,
 // и обработчик клика по картинке (просмотр фото)

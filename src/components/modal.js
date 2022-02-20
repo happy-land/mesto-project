@@ -1,11 +1,8 @@
 import { popups, validationConfig } from '../pages/index.js';
 import { toggleButtonState } from './validate.js';
-const popupPhotoViewElement = document.querySelector('.popup_type_photo-view');
-
-const popupContainer = popupPhotoViewElement.querySelector('.popup__container');
-const photoViewElement = popupContainer.querySelector('.photo-view');
-const image = photoViewElement.querySelector('.photo-view__image');
-const title = photoViewElement.querySelector('.photo-view__title');
+import { popupPhotoViewElement,
+         image,
+         title } from '../utils/constants.js';
 
 // Функция открывает попап
 const openPopup = (popup) => {

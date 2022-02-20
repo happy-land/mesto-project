@@ -84,7 +84,7 @@ const enableValidation = ({
   submitButtonSelector,
   inactiveButtonClass,
   inputErrorClass,
-  errorClass,
+  errorClass
 }) => {
   const formList = Array.from(document.querySelectorAll(formSelector));
   formList.forEach((formElement) => {
