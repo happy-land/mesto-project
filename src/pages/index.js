@@ -1,9 +1,11 @@
 import Api from '../components/api.js';
+import Section from '../components/Section.js';
 import { inputFieldStateCheck } from '../utils/utils.js';
-import { createCard, renderCard } from '../components/card.js';
+import Card from '../components/Card.js';
 import { openPopup, closePopup, updateSubmitButtonState } from '../components/modal.js';
 import { enableValidation } from '../components/validate.js';
-import { popupProfileEditElement,
+import {
+  popupProfileEditElement,
   popupPlaceNewElement,
   popupAvatarEditElement,
   popupRemoveCardElement,
@@ -22,7 +24,11 @@ import { popupProfileEditElement,
   newPlaceForm,
   placeInput,
   imageUrlInput,
-  removeCardForm } from '../utils/constants.js';
+  removeCardForm,
+  cardTemplate,
+  cardsContainer,
+  cardListSelector,
+} from '../utils/constants.js';
 
 import '../pages/index.css';
 
@@ -31,12 +37,33 @@ const api = new Api({
   baseUrl: 'https://nomoreparties.co/v1/plus-cohort-6',
   headers: {
     authorization: 'f3d57c75-f8a6-4acb-a0b6-75252be6dd05',
-    'Content-Type': 'application/json'
-    }
+    'Content-Type': 'application/json',
+  },
 });
 
 // id текущего пользователя
 let currentUserId;
+
+// создаем объект section класса Section
+const section = new Section(
+  {
+    // Отрисовка каждого отдельного элемента функцией renderer
+    // cardData - отдельная карточка (со свойствами link, name...)
+    renderer: (cardData) => {
+      const card = new Card(
+        cardData,
+        currentUserId,
+        handleCardClick,
+        handleLikeClick,
+        handleDeleteClick,
+        cardTemplate
+      );
+      const cardElement = card.getView();
+      section.addItem(cardElement);
+    },
+  },
+  cardListSelector
+);
 
 // Массив попапов
 export const popups = document.querySelectorAll('.popup');
@@ -54,7 +81,8 @@ avatarLogo.addEventListener('mouseover', handleMouseOver);
 avatarLogo.addEventListener('mouseout', handleMouseOut);
 
 // Загрузка данных о пользователе и массив карточек - одним промисом
-api.getAppInfo()
+api
+  .getAppInfo()
   .then(([user, cardData]) => {
     profileAvatar.src = user.avatar;
     profileUsername.textContent = user.name;
@@ -62,26 +90,16 @@ api.getAppInfo()
 
     currentUserId = user._id;
 
-    cardData.forEach((cardEl) => {
-      const cardElement = createCard(
-        {
-          ...cardEl,
-          cardId: cardEl._id,
-          ownerId: cardEl.owner._id,
-        },
-        currentUserId,
-        handleCardLike,
-        handleCardDelete
-      );
-
-      renderCard(cardElement);
-    });
+    section.renderItems(cardData);
   })
-  .catch((err) => console.log(err));
+  .catch((err) => console.log('ОШИБКА --- ' + err));
+
+// дописать обработчик клика на саму карточку
+const handleCardClick = (cardElement) => {};
 
 // обработчики кликов на кнопки карточки
 // принимают на вход id карточки и другие ее данные, которые важны
-const handleCardLike = (cardElement, cardId) => {
+const handleLikeClick = (cardElement, cardId) => {
   const likeButton = cardElement.querySelector('.card__like-button');
 
   if (likeButton.classList.contains('card__like-button_active')) {
@@ -113,7 +131,7 @@ const handleDeleteSubmit = (cardElement, cardId, event) => {
     .catch((err) => console.log(err));
 };
 
-const handleCardDelete = (cardElement, cardId) => {
+const handleDeleteClick = (cardElement, cardId) => {
   openPopup(popupRemoveCardElement);
   // обработчик формы - подтвердить удаление карточки
   removeCardForm.addEventListener('submit', (event) => {
@@ -155,6 +173,7 @@ popups.forEach((popup) => {
   });
 });
 
+// перенести в utils.js
 const renderLoading = (isLoading, popup) => {
   const button = popup.querySelector('.popup__button');
   if (isLoading) {
@@ -188,7 +207,8 @@ const handleProfileFormSubmit = (event) => {
   event.preventDefault();
 
   renderLoading(true, popupProfileEditElement);
-  api.updateProfile(nameInput.value, jobInput.value)
+  api
+    .updateProfile(nameInput.value, jobInput.value)
     .then((userData) => {
       // вставить значение nameInput.value
       profileUsername.textContent = userData.name;
@@ -220,8 +240,8 @@ const handleNewSubmit = (event) => {
           ownerId: cardData.owner._id,
         },
         currentUserId,
-        handleCardLike,
-        handleCardDelete
+        handleLikeClick,
+        handleDeleteClick
       );
 
       renderCard(newCard, 'start');
