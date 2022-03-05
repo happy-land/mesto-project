@@ -1,7 +1,7 @@
-import Api from '../components/api.js';
+import Api from '../components/Api.js';
 import Section from '../components/Section.js';
-import { inputFieldStateCheck } from '../utils/utils.js';
 import Card from '../components/Card.js';
+import { inputFieldStateCheck } from '../utils/utils.js';
 import { openPopup, closePopup, updateSubmitButtonState } from '../components/modal.js';
 import { enableValidation } from '../components/validate.js';
 import {
