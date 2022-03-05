@@ -95,22 +95,29 @@ api
   .catch((err) => console.log('ОШИБКА --- ' + err));
 
 // дописать обработчик клика на саму карточку
-const handleCardClick = (cardElement) => {};
+const handleCardClick = (card, title, image) => {
+  popup.setEventListeners();
+  const cardElement = card.element();
+  popup.open(title, image);
+};
 
 // обработчики кликов на кнопки карточки
 // принимают на вход id карточки и другие ее данные, которые важны
-const handleLikeClick = (cardElement, cardId) => {
+const handleLikeClick = (card) => {
+  const cardElement = card.element();
+  const cardId = card.id();
+
   const likeButton = cardElement.querySelector('.card__like-button');
 
   if (likeButton.classList.contains('card__like-button_active')) {
-    removeLike(cardId)
+    api.removeLike(cardId)
       .then((card) => {
         likeButton.classList.remove('card__like-button_active');
         cardElement.querySelector('.card__like-counter').textContent = card.likes.length;
       })
       .catch((err) => console.log(err));
   } else {
-    addLike(cardId)
+    api.addLike(cardId)
       .then((card) => {
         likeButton.classList.add('card__like-button_active');
         cardElement.querySelector('.card__like-counter').textContent = card.likes.length;
@@ -119,13 +126,14 @@ const handleLikeClick = (cardElement, cardId) => {
   }
 };
 
-const handleDeleteSubmit = (cardElement, cardId, event) => {
-  console.log(`event=${event}, cardElement=${cardElement}, cardId=${cardId}`);
+const handleDeleteSubmit = (card, cardId, event) => {
+  //console.log(`event=${event}, cardElement=${cardElement}, cardId=${cardId}`);
   event.preventDefault();
 
-  deleteCard(cardId)
+  api.deleteCard(cardId)
     .then((res) => {
-      cardElement.closest('.card').remove();
+      //cardElement.closest('.card').remove();
+      card.remove();
       closePopup(popupRemoveCardElement);
     })
     .catch((err) => console.log(err));
