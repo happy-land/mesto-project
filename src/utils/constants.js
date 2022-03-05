@@ -41,5 +41,6 @@ export const image = photoViewElement.querySelector('.photo-view__image');
 export const title = photoViewElement.querySelector('.photo-view__title');
 
 // Шаблон карточки - берем из html
-export const cardTemplate = document.querySelector('#card-template').content;
+export const cardListSelector = '.content__cards';
+export const cardTemplate = '#card-template';
 export const cardsContainer = document.querySelector('.cards');

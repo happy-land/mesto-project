@@ -10,3 +10,7 @@ export const inputFieldStateCheck = (popup) => {
     }
   });
 }
+
+// export const renderLoading = (popupSelector, isLoading = false) => {
+//   const button = document.querySelector(`${popupSelector}`)
+// }
