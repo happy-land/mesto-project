@@ -1,8 +1,9 @@
 import Api from '../components/Api.js';
 import Section from '../components/Section.js';
 import Card from '../components/Card.js';
+import PopupWithForm from '../components/PopupWithForm';
 import { inputFieldStateCheck } from '../utils/utils.js';
-import { openPopup, closePopup, updateSubmitButtonState } from '../components/modal.js';
+// import { openPopup, closePopup, updateSubmitButtonState } from '../components/modal.js';
 import { enableValidation } from '../components/validate.js';
 import {
   popupProfileEditElement,
@@ -10,6 +11,11 @@ import {
   popupAvatarEditElement,
   popupRemoveCardElement,
   editProfileButton,
+  popupProfileEditSelector,
+  popupPlaceNewSelector, 
+  popupAvatarEditSelector,
+  popupRemoveCardSelector,
+  popupImageSelector,
   avatarLogo,
   editAvatarIcon,
   addPlaceButtonElement,
@@ -64,6 +70,14 @@ const section = new Section(
   },
   cardListSelector
 );
+
+const popupAvatar = new PopupWithForm(popupAvatarEditSelector, (event) => {
+  handleAvatarFormSubmit(event);
+});
+
+const popupProfileEdit = new PopupWithForm(popupProfileEditSelector, (event) => {
+  handleProfileFormSubmit(event);
+});
 
 // Массив попапов
 export const popups = document.querySelectorAll('.popup');
@@ -150,35 +164,22 @@ const handleDeleteClick = (cardElement, cardId) => {
 /* **********************    Кнопки вызова попапов   ********************** */
 
 editAvatarIcon.addEventListener('click', () => {
-  inputFieldStateCheck(popupAvatarEditElement);
-  openPopup(popupAvatarEditElement);
-  updateSubmitButtonState(popupAvatarEditElement);
+  //inputFieldStateCheck(popupAvatarEditElement);
+  popupAvatar.open();
+  // updateSubmitButtonState(popupAvatarEditElement);
 });
 
 editProfileButton.addEventListener('click', () => {
   nameInput.value = profileUsername.textContent;
   jobInput.value = profileDescription.textContent;
-  inputFieldStateCheck(popupProfileEditElement);
-  openPopup(popupProfileEditElement);
-  updateSubmitButtonState(popupProfileEditElement);
+  //inputFieldStateCheck(popupProfileEditElement);
+  popupProfileEdit.open();
+  //updateSubmitButtonState(popupProfileEditElement);
 });
 
 addPlaceButtonElement.addEventListener('click', () => {
   openPopup(popupPlaceNewElement);
   updateSubmitButtonState(popupPlaceNewElement);
-});
-
-// выбрать кнопки закрытия у всех модальных окон
-// и повесить обработчик закрытия окна при клике - closePopup
-popups.forEach((popup) => {
-  popup.addEventListener('mousedown', (evt) => {
-    if (evt.target.classList.contains('popup_opened')) {
-      closePopup(popup);
-    }
-    if (evt.target.classList.contains('popup__close')) {
-      closePopup(popup);
-    }
-  });
 });
 
 // перенести в utils.js
@@ -192,15 +193,13 @@ const renderLoading = (isLoading, popup) => {
 };
 
 // обработчик формы - Редактирование аватара
-const handleAvatarFormSubmit = (event) => {
-  event.preventDefault();
-
+const handleAvatarFormSubmit = () => {
   renderLoading(true, popupAvatarEditElement);
-  updateAvatar(avatarInput.value)
+  api.updateAvatar(popupAvatar.formData.avatar)
     .then((userData) => {
       avatarLogo.src = userData.avatar;
       // закрываем попап
-      closePopup(popupAvatarEditElement);
+      popupAvatar.close();
     })
     .catch((err) => console.log(err))
     .finally(() => {
@@ -208,23 +207,22 @@ const handleAvatarFormSubmit = (event) => {
     });
 };
 
-editAvatarForm.addEventListener('submit', handleAvatarFormSubmit);
+popupAvatar.setEventListeners();
 
 // обработчик формы - Редактирование профиля
-const handleProfileFormSubmit = (event) => {
-  event.preventDefault();
-
+const handleProfileFormSubmit = () => {
   renderLoading(true, popupProfileEditElement);
   api
-    .updateProfile(nameInput.value, jobInput.value)
+    .updateProfile(popupProfileEdit.formData.username, popupProfileEdit.formData.description)
     .then((userData) => {
+      popupProfileEdit.open();
       // вставить значение nameInput.value
       profileUsername.textContent = userData.name;
-
       // вставить значение jobInput.value
       profileDescription.textContent = userData.about;
       // закрываем попап
-      closePopup(popupProfileEditElement);
+      popupProfileEdit.close();
+      
     })
     .catch((err) => console.log(err))
     .finally(() => {
@@ -232,7 +230,7 @@ const handleProfileFormSubmit = (event) => {
     });
 };
 
-editProfileForm.addEventListener('submit', handleProfileFormSubmit);
+popupProfileEdit.setEventListeners();
 
 // обработчик формы - Новая карточка
 const handleNewSubmit = (event) => {

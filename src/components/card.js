@@ -32,11 +32,15 @@ export default class Card {
     image.src = this._image;
     image.alt = this._title;
 
+    const trashButtonElement = this._element.querySelector('.card__trash-icon');
+    const isOwner = this._ownerId === this._userId;
+    trashButtonElement.classList.add(
+      isOwner ? 'card__trash-icon_visible' : 'card__trash-icon_hidden'
+    );
+
     this._updateLikesView();
 
     this._setEventListeners();
-
-    _isRemovable();
 
     return this._element;
   }
@@ -62,7 +66,7 @@ export default class Card {
   }
 
   _setEventListeners() {
-    this._element.querySelector('.card').addEventListener('click', () => {
+    this._element.addEventListener('click', () => {
       this._handleCardClick(this, this._title, this._image);
     });
 
@@ -88,13 +92,5 @@ export default class Card {
     } else {
       like.classList.remove('card__like-button_active');
     }
-  }
-
-  _isRemovable() {
-    const trashButtonElement = this._element.querySelector('.card__trash-icon');
-    const isOwner = this._ownerId === this._userId;
-    trashButtonElement.classList.add(
-      isOwner ? 'card__trash-icon_visible' : 'card__trash-icon_hidden'
-    );
   }
 }

@@ -7,7 +7,7 @@ export default class PopupWithImage extends Popup {
   }
 
   open(title, image) {
-    super.open()
+    super.open();
     imageElement.src = image;
     imageElement.alt = title;
     titleElement.textContent = title;
