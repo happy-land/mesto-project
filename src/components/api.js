@@ -9,7 +9,7 @@ export default class Api {
   };
   
   // получить пользователя
-  _getUser(){
+  getUser(){
     return fetch(`${this._baseUrl}/users/me`, {
       headers: this._headers,
     }).then(this._getResponse);
@@ -22,8 +22,8 @@ export default class Api {
     }).then(this._getResponse);
   };
   
-  getAppInfo(){ 
-    return Promise.all([this._getUser(), this._getCards()]);
+  getAppInfo(){
+    return Promise.all([this.getUser(), this._getCards()]);
   };
   
   // обновить профиль

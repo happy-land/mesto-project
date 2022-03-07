@@ -1,6 +1,3 @@
-import { showImagePopup } from './modal.js';
-import { cardTemplate, cardsContainer } from '../utils/constants.js';
-
 export default class Card {
   constructor(
     { name, link, likes, _id, ownerId },
@@ -32,15 +29,11 @@ export default class Card {
     image.src = this._image;
     image.alt = this._title;
 
-    const trashButtonElement = this._element.querySelector('.card__trash-icon');
-    const isOwner = this._ownerId === this._userId;
-    trashButtonElement.classList.add(
-      isOwner ? 'card__trash-icon_visible' : 'card__trash-icon_hidden'
-    );
-
     this._updateLikesView();
 
     this._setEventListeners();
+
+    this._isRemovable();
 
     return this._element;
   }
@@ -92,5 +85,13 @@ export default class Card {
     } else {
       like.classList.remove('card__like-button_active');
     }
+  }
+
+  _isRemovable() {
+    const trashButtonElement = this._element.querySelector('.card__trash-icon');
+    const isOwner = this._ownerId === this._userId;
+    trashButtonElement.classList.add(
+      isOwner ? 'card__trash-icon_visible' : 'card__trash-icon_hidden'
+    );
   }
 }

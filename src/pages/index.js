@@ -1,7 +1,9 @@
-import Api from '../components/Api.js';
+import Api from '../components/api.js';
 import Section from '../components/Section.js';
 import Card from '../components/Card.js';
-import PopupWithForm from '../components/PopupWithForm';
+import PopupWithImage from '../components/PopupWithImage.js';
+import PopupWithForm from '../components/PopupWithForm.js';
+
 import UserInfo from '../components/UserInfo.js';
 import { inputFieldStateCheck } from '../utils/utils.js';
 // import { openPopup, closePopup, updateSubmitButtonState } from '../components/modal.js';
@@ -11,12 +13,12 @@ import {
   popupPlaceNewElement,
   popupAvatarEditElement,
   popupRemoveCardElement,
+  popupProfileEditSelector, // '.popup_type_profile-edit'
+  popupPlaceNewSelector, // '.popup_type_place-new'
+  popupAvatarEditSelector, // '.popup_type_avatar-edit'
+  popupRemoveCardSelector, // '.popup_type_remove-card'
+  popupImageSelector, // '.popup_type_photo-view'
   editProfileButton,
-  popupProfileEditSelector,
-  popupPlaceNewSelector, 
-  popupAvatarEditSelector,
-  popupRemoveCardSelector,
-  popupImageSelector,
   avatarLogo,
   editAvatarIcon,
   addPlaceButtonElement,
@@ -39,7 +41,7 @@ import {
 
 import '../pages/index.css';
 
-// Создаем обьек Api
+// Создаем обьект Api
 const api = new Api({
   baseUrl: 'https://nomoreparties.co/v1/plus-cohort-6',
   headers: {
@@ -74,16 +76,25 @@ const section = new Section(
 
 const userInfo = new UserInfo(profileUsername, profileDescription);
 
-const popupAvatar = new PopupWithForm(popupAvatarEditSelector, (event) => {
-  handleAvatarFormSubmit(event);
-});
+// попап - открыть картинку
+const popupImage = new PopupWithImage(popupImageSelector);
+popupImage.setEventListeners();
 
-const popupProfileEdit = new PopupWithForm(popupProfileEditSelector, (event) => {
-  handleProfileFormSubmit(event);
+// попапы с формой
+const popupAvatar = new PopupWithForm(popupAvatarEditSelector, (evt) => {
+  handleAvatarFormSubmit(evt);
 });
+popupAvatar.setEventListeners();
 
-// Массив попапов
-export const popups = document.querySelectorAll('.popup');
+const popupProfileEdit = new PopupWithForm(popupProfileEditSelector, handleProfileFormSubmit);
+popupProfileEdit.setEventListeners();
+
+const popupAddCard = new PopupWithForm(popupPlaceNewSelector, handleNewSubmit);
+popupAddCard.setEventListeners();
+
+const popupRemoveCard = new PopupWithForm(popupRemoveCardSelector, handleDeleteSubmit);
+popupRemoveCard.setEventListeners();
+
 
 // редактирование аватара
 const handleMouseOver = () => {
@@ -111,11 +122,10 @@ api
   })
   .catch((err) => console.log('ОШИБКА --- ' + err));
 
-// дописать обработчик клика на саму карточку
+  
 const handleCardClick = (card, title, image) => {
-  popup.setEventListeners();
   const cardElement = card.element();
-  popup.open(title, image);
+  popupImage.open(title, image);
 };
 
 // обработчики кликов на кнопки карточки
@@ -127,14 +137,16 @@ const handleLikeClick = (card) => {
   const likeButton = cardElement.querySelector('.card__like-button');
 
   if (likeButton.classList.contains('card__like-button_active')) {
-    api.removeLike(cardId)
+    api
+      .removeLike(cardId)
       .then((card) => {
         likeButton.classList.remove('card__like-button_active');
         cardElement.querySelector('.card__like-counter').textContent = card.likes.length;
       })
       .catch((err) => console.log(err));
   } else {
-    api.addLike(cardId)
+    api
+      .addLike(cardId)
       .then((card) => {
         likeButton.classList.add('card__like-button_active');
         cardElement.querySelector('.card__like-counter').textContent = card.likes.length;
@@ -143,13 +155,12 @@ const handleLikeClick = (card) => {
   }
 };
 
-const handleDeleteSubmit = (card, cardId, event) => {
-  //console.log(`event=${event}, cardElement=${cardElement}, cardId=${cardId}`);
+const handleDeleteSubmit = (cardElement, cardId, event) => {
   event.preventDefault();
 
-  api.deleteCard(cardId)
+  deleteCard(cardId)
     .then((res) => {
-      //cardElement.closest('.card').remove();
+      cardElement.closest('.card').remove();
       card.remove();
       closePopup(popupRemoveCardElement);
     })
@@ -167,26 +178,30 @@ const handleDeleteClick = (cardElement, cardId) => {
 /* **********************    Кнопки вызова попапов   ********************** */
 
 editAvatarIcon.addEventListener('click', () => {
-  //inputFieldStateCheck(popupAvatarEditElement);
+  inputFieldStateCheck(popupAvatarEditElement);
   popupAvatar.open();
   // updateSubmitButtonState(popupAvatarEditElement);
 });
 
 editProfileButton.addEventListener('click', () => {
-  nameInput.value = userInfo.getUserInfo(api).name;
-  jobInput.value = userInfo.getUserInfo(api).about;
-  //inputFieldStateCheck(popupProfileEditElement);
   popupProfileEdit.open();
-  //updateSubmitButtonState(popupProfileEditElement);
+  userInfo.getUserInfo(api);
+
+  nameInput.value = userInfo.name;
+  jobInput.value = userInfo.about;
+
+  // inputFieldStateCheck(popupProfileEditElement);
+  // updateSubmitButtonState(popupProfileEditElement);
 });
 
 addPlaceButtonElement.addEventListener('click', () => {
-  openPopup(popupPlaceNewElement);
-  updateSubmitButtonState(popupPlaceNewElement);
+  popupAddCard.open();
+  // updateSubmitButtonState(popupPlaceNewElement);
 });
 
+
 // перенести в utils.js
-const renderLoading = (isLoading, popup) => {
+export const renderLoading = (isLoading, popup) => {
   const button = popup.querySelector('.popup__button');
   if (isLoading) {
     button.textContent = 'Сохранение...';
@@ -196,9 +211,9 @@ const renderLoading = (isLoading, popup) => {
 };
 
 // обработчик формы - Редактирование аватара
-const handleAvatarFormSubmit = () => {
+const handleAvatarFormSubmit = (str, event) => {
   renderLoading(true, popupAvatarEditElement);
-  api.updateAvatar(popupAvatar.formData.avatar)
+  api.updateAvatar(avatarInput.value)
     .then((userData) => {
       avatarLogo.src = userData.avatar;
       // закрываем попап
@@ -210,24 +225,18 @@ const handleAvatarFormSubmit = () => {
     });
 };
 
-popupAvatar.setEventListeners();
+// popupAvatar.setEventListeners();
 // обработчик формы - Редактирование профиля
-const handleProfileFormSubmit = () => {
+const handleProfileFormSubmit = (event) => {
   renderLoading(true, popupProfileEditElement);
-  api
-    .updateProfile(popupProfileEdit.formData.username, popupProfileEdit.formData.description)
-    .then((userData) => {
-      popupProfileEdit.open();
-      popupProfileEdit.close();
-      userInfo.setUserInfo(userData);
-    })
-    .catch((err) => console.log(err))
-    .finally(() => {
-      renderLoading(false, popupProfileEditElement);
-    });
+
+  userInfo.setUserInfo(api, nameInput.value, jobInput.value);
+
+  popupProfileEdit.close();
+
 };
 
-popupProfileEdit.setEventListeners();
+editProfileForm.addEventListener('submit', handleProfileFormSubmit);
 
 // обработчик формы - Новая карточка
 const handleNewSubmit = (event) => {
