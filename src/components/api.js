@@ -22,7 +22,7 @@ export default class Api {
     }).then(this._getResponse);
   };
   
-  getAppInfo(){
+  getAppInfo(){ 
     return Promise.all([this._getUser(), this._getCards()]);
   };
   

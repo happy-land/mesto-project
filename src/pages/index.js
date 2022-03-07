@@ -2,6 +2,7 @@ import Api from '../components/Api.js';
 import Section from '../components/Section.js';
 import Card from '../components/Card.js';
 import PopupWithForm from '../components/PopupWithForm';
+import UserInfo from '../components/UserInfo.js';
 import { inputFieldStateCheck } from '../utils/utils.js';
 // import { openPopup, closePopup, updateSubmitButtonState } from '../components/modal.js';
 import { enableValidation } from '../components/validate.js';
@@ -71,6 +72,8 @@ const section = new Section(
   cardListSelector
 );
 
+const userInfo = new UserInfo(profileUsername, profileDescription);
+
 const popupAvatar = new PopupWithForm(popupAvatarEditSelector, (event) => {
   handleAvatarFormSubmit(event);
 });
@@ -103,7 +106,7 @@ api
     profileDescription.textContent = user.about;
 
     currentUserId = user._id;
-
+    userInfo.getUserInfo(api);
     section.renderItems(cardData);
   })
   .catch((err) => console.log('ОШИБКА --- ' + err));
@@ -170,8 +173,8 @@ editAvatarIcon.addEventListener('click', () => {
 });
 
 editProfileButton.addEventListener('click', () => {
-  nameInput.value = profileUsername.textContent;
-  jobInput.value = profileDescription.textContent;
+  nameInput.value = userInfo.getUserInfo(api).name;
+  jobInput.value = userInfo.getUserInfo(api).about;
   //inputFieldStateCheck(popupProfileEditElement);
   popupProfileEdit.open();
   //updateSubmitButtonState(popupProfileEditElement);
@@ -208,7 +211,6 @@ const handleAvatarFormSubmit = () => {
 };
 
 popupAvatar.setEventListeners();
-
 // обработчик формы - Редактирование профиля
 const handleProfileFormSubmit = () => {
   renderLoading(true, popupProfileEditElement);
@@ -216,13 +218,8 @@ const handleProfileFormSubmit = () => {
     .updateProfile(popupProfileEdit.formData.username, popupProfileEdit.formData.description)
     .then((userData) => {
       popupProfileEdit.open();
-      // вставить значение nameInput.value
-      profileUsername.textContent = userData.name;
-      // вставить значение jobInput.value
-      profileDescription.textContent = userData.about;
-      // закрываем попап
       popupProfileEdit.close();
-      
+      userInfo.setUserInfo(userData);
     })
     .catch((err) => console.log(err))
     .finally(() => {
