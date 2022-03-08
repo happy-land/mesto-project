@@ -10,8 +10,15 @@ export default class Section {
     });
   }
 
-  addItem(element) {
-    this._container.append(element);
+  addItem(element, position = 'end') {
+    switch (position) {
+      case 'end':
+        this._container.append(element);
+        break;
+      case 'start':
+        this._container.prepend(element);
+        break;
+    }
   }
 
   clear() {

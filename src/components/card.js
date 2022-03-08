@@ -1,6 +1,6 @@
 export default class Card {
   constructor(
-    { name, link, likes, _id, ownerId },
+    { name, link, likes, _id, owner },
     userId,
     handleCardClick,
     handleLikeClick,
@@ -11,7 +11,7 @@ export default class Card {
     this._title = name;
     this._image = link;
     this._likes = likes;
-    this._ownerId = ownerId;
+    this._ownerId = owner._id;
 
     this._userId = userId;
 
@@ -59,7 +59,7 @@ export default class Card {
   }
 
   _setEventListeners() {
-    this._element.addEventListener('click', () => {
+    this._element.querySelector('.card__image').addEventListener('click', () => {
       this._handleCardClick(this, this._title, this._image);
     });
 

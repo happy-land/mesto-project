@@ -1,20 +1,36 @@
 import Popup from "./Popup";
 
 export default class PopupWithForm extends Popup{
-  constructor(popUpSelector, submit) {
+
+
+  // новая версия конструктора
+  constructor(popUpSelector, {submit}) {
     super(popUpSelector);
     this._popupElement = document.querySelector(popUpSelector);
     this._formElement = this._popupElement.querySelector('.popup__form');
     this._submit = submit;
     this.formData = {};
   }
+
+  // старая версия конструктора
+  // constructor(popUpSelector, submit) {
+  //   super(popUpSelector);
+  //   this._popupElement = document.querySelector(popUpSelector);
+  //   this._formElement = this._popupElement.querySelector('.popup__form');
+  //   this._submit = submit;
+  //   this.formData = {};
+  // }
   
   setEventListeners() {
     super.setEventListeners();
 
     this._getInputValues();
 
-    this._formElement.addEventListener('submit', () => {
+    this._formElement.addEventListener('submit', (evt) => {
+      evt.preventDefault();
+      console.log('внутри addEventListener this= ' + this);
+
+      console.log('внутри addEventListener evt.target= ' + evt.target);
       this._getInputValues();
       this._submit();
     });

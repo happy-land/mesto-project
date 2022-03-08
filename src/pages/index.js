@@ -81,20 +81,80 @@ const popupImage = new PopupWithImage(popupImageSelector);
 popupImage.setEventListeners();
 
 // попапы с формой
-const popupAvatar = new PopupWithForm(popupAvatarEditSelector, (evt) => {
-  handleAvatarFormSubmit(evt);
+
+// было:
+// const popupAvatar = new PopupWithForm(popupAvatarEditSelector, (evt) => {
+//   handleAvatarFormSubmit(evt);
+// });
+
+// стало:
+const popupAvatar = new PopupWithForm(popupAvatarEditSelector, {
+  submit: () => {
+    renderLoading(true, popupAvatarEditElement);
+    api
+      .updateAvatar(avatarInput.value)
+      .then((userData) => {
+        avatarLogo.src = userData.avatar;
+        // закрываем попап
+        popupAvatar.close();
+      })
+      .catch((err) => console.log(err))
+      .finally(() => {
+        renderLoading(false, popupAvatarEditElement);
+      });
+  },
 });
 popupAvatar.setEventListeners();
 
-const popupProfileEdit = new PopupWithForm(popupProfileEditSelector, handleProfileFormSubmit);
+const popupProfileEdit = new PopupWithForm(popupProfileEditSelector, {
+  submit: () => {
+    userInfo.setUserInfo(api, nameInput.value, jobInput.value);
+    popupProfileEdit.close();
+  },
+});
 popupProfileEdit.setEventListeners();
 
-const popupAddCard = new PopupWithForm(popupPlaceNewSelector, handleNewSubmit);
+// const popupAddCard = new PopupWithForm(popupPlaceNewSelector, handleNewSubmit);
+// popupAddCard.setEventListeners();
+
+const popupAddCard = new PopupWithForm(popupPlaceNewSelector, {
+  submit: () => {
+    // console.log(popupAddCard.formData);
+    // formData.place = 123
+    // formData.imagelink = http://otpuskthai.ru/wp-content/uploads/2014/02/ramboutan.jpg
+    console.log('currentUserId = ' + currentUserId);
+    api
+      .addCard(placeInput.value, imageUrlInput.value)
+      .then((cardData) => {
+        const newCard = new Card(
+          {
+            ...cardData,
+            cardId: cardData._id,
+            ownerId: cardData.owner._id,
+          },
+          currentUserId,
+          handleCardClick,
+          handleLikeClick,
+          handleDeleteClick,
+          cardTemplate
+        );
+
+        const cardElement = newCard.getView();
+        section.addItem(cardElement, 'start');
+
+        // закрываем попап
+        popupAddCard.close();
+      })
+      .catch((err) => console.log(err))
+      .finally(() => {
+        // renderLoading(false, popupAddCard);
+      });
+  },
+});
 popupAddCard.setEventListeners();
 
-const popupRemoveCard = new PopupWithForm(popupRemoveCardSelector, handleDeleteSubmit);
-popupRemoveCard.setEventListeners();
-
+// const popupRemoveCard = new PopupWithForm(popupRemoveCardSelector, handleDeleteSubmit);
+// popupRemoveCard.setEventListeners();
 
 // редактирование аватара
 const handleMouseOver = () => {
@@ -122,7 +182,6 @@ api
   })
   .catch((err) => console.log('ОШИБКА --- ' + err));
 
-  
 const handleCardClick = (card, title, image) => {
   const cardElement = card.element();
   popupImage.open(title, image);
@@ -199,7 +258,6 @@ addPlaceButtonElement.addEventListener('click', () => {
   // updateSubmitButtonState(popupPlaceNewElement);
 });
 
-
 // перенести в utils.js
 export const renderLoading = (isLoading, popup) => {
   const button = popup.querySelector('.popup__button');
@@ -211,66 +269,66 @@ export const renderLoading = (isLoading, popup) => {
 };
 
 // обработчик формы - Редактирование аватара
-const handleAvatarFormSubmit = (str, event) => {
-  renderLoading(true, popupAvatarEditElement);
-  api.updateAvatar(avatarInput.value)
-    .then((userData) => {
-      avatarLogo.src = userData.avatar;
-      // закрываем попап
-      popupAvatar.close();
-    })
-    .catch((err) => console.log(err))
-    .finally(() => {
-      renderLoading(false, popupAvatarEditElement);
-    });
-};
+// const handleAvatarFormSubmit = (str, event) => {
+//   renderLoading(true, popupAvatarEditElement);
+//   api.updateAvatar(avatarInput.value)
+//     .then((userData) => {
+//       avatarLogo.src = userData.avatar;
+//       // закрываем попап
+//       popupAvatar.close();
+//     })
+//     .catch((err) => console.log(err))
+//     .finally(() => {
+//       renderLoading(false, popupAvatarEditElement);
+//     });
+// };
 
 // popupAvatar.setEventListeners();
 // обработчик формы - Редактирование профиля
-const handleProfileFormSubmit = (event) => {
-  renderLoading(true, popupProfileEditElement);
+// const handleProfileFormSubmit = (event) => {
+//   renderLoading(true, popupProfileEditElement);
 
-  userInfo.setUserInfo(api, nameInput.value, jobInput.value);
+//   userInfo.setUserInfo(api, nameInput.value, jobInput.value);
 
-  popupProfileEdit.close();
+//   popupProfileEdit.close();
 
-};
+// };
 
-editProfileForm.addEventListener('submit', handleProfileFormSubmit);
+// editProfileForm.addEventListener('submit', handleProfileFormSubmit);
 
 // обработчик формы - Новая карточка
-const handleNewSubmit = (event) => {
-  event.preventDefault();
+// const handleNewSubmit = (event) => {
+//   event.preventDefault();
 
-  renderLoading(true, popupPlaceNewElement);
-  addCard(placeInput.value, imageUrlInput.value)
-    .then((cardData) => {
-      const newCard = createCard(
-        {
-          ...cardData,
-          cardId: cardData._id,
-          ownerId: cardData.owner._id,
-        },
-        currentUserId,
-        handleLikeClick,
-        handleDeleteClick
-      );
+//   renderLoading(true, popupPlaceNewElement);
+//   addCard(placeInput.value, imageUrlInput.value)
+//     .then((cardData) => {
+//       const newCard = createCard(
+//         {n
+//           ...cardData,
+//           cardId: cardData._id,
+//           ownerId: cardData.owner._id,
+//         },
+//         currentUserId,
+//         handleLikeClick,
+//         handleDeleteClick
+//       );
 
-      renderCard(newCard, 'start');
+//       renderCard(newCard, 'start');
 
-      // очищаем форму
-      newPlaceForm.reset();
+//       // очищаем форму
+//       newPlaceForm.reset();
 
-      // закрываем попап
-      closePopup(popupPlaceNewElement);
-    })
-    .catch((err) => console.log(err))
-    .finally(() => {
-      renderLoading(false, popupPlaceNewElement);
-    });
-};
+//       // закрываем попап
+//       closePopup(popupPlaceNewElement);
+//     })
+//     .catch((err) => console.log(err))
+//     .finally(() => {
+//       renderLoading(false, popupPlaceNewElement);
+//     });
+// };
 
-newPlaceForm.addEventListener('submit', handleNewSubmit);
+// newPlaceForm.addEventListener('submit', handleNewSubmit);
 
 // Валидация форм
 export const validationConfig = {
