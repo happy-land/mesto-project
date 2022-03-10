@@ -68,7 +68,7 @@ export default class Card {
     });
 
     this._element.querySelector('.card__trash-icon').addEventListener('click', () => {
-      this._handleDeleteClick(this, this._id);
+      this._handleDeleteClick(this);
     });
   }
 

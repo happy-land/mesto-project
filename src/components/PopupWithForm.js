@@ -41,6 +41,10 @@ export default class PopupWithForm extends Popup{
     this._formElement.reset();
   }
 
+  confirmDeleteCard(card) {
+    this._submit(card);
+  }
+
   _getInputValues() {
     const formInputList = this._formElement.querySelectorAll('.popup__input');
     Array.from(formInputList).forEach(element => {

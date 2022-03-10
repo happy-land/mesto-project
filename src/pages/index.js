@@ -153,8 +153,27 @@ const popupAddCard = new PopupWithForm(popupPlaceNewSelector, {
 });
 popupAddCard.setEventListeners();
 
-// const popupRemoveCard = new PopupWithForm(popupRemoveCardSelector, handleDeleteSubmit);
-// popupRemoveCard.setEventListeners();
+
+// const handleDeleteSubmit = (cardElement, cardId, event) => {
+//   event.preventDefault();
+
+//   deleteCard(cardId)
+//     .then((res) => {
+//       cardElement.closest('.card').remove();
+//       card.remove();
+//       closePopup(popupRemoveCardElement);
+//     })
+//     .catch((err) => console.log(err));
+// };
+
+
+const popupRemoveCard = new PopupWithForm(popupRemoveCardSelector, {
+  submit: (card) => {
+    console.log('popupRemoveCard + card._id' + card._id);
+
+  }
+});
+popupRemoveCard.setEventListeners();
 
 // редактирование аватара
 const handleMouseOver = () => {
@@ -214,24 +233,26 @@ const handleLikeClick = (card) => {
   }
 };
 
-const handleDeleteSubmit = (cardElement, cardId, event) => {
-  event.preventDefault();
+// const handleDeleteSubmit = (cardElement, cardId, event) => {
+//   event.preventDefault();
 
-  deleteCard(cardId)
-    .then((res) => {
-      cardElement.closest('.card').remove();
-      card.remove();
-      closePopup(popupRemoveCardElement);
-    })
-    .catch((err) => console.log(err));
-};
+//   deleteCard(cardId)
+//     .then((res) => {
+//       cardElement.closest('.card').remove();
+//       card.remove();
+//       closePopup(popupRemoveCardElement);
+//     })
+//     .catch((err) => console.log(err));
+// };
 
-const handleDeleteClick = (cardElement, cardId) => {
-  openPopup(popupRemoveCardElement);
+const handleDeleteClick = (card) => {
+  // openPopup(popupRemoveCardElement);
+  popupRemoveCard.open();
+  popupRemoveCard.confirmDeleteCard(card);
   // обработчик формы - подтвердить удаление карточки
-  removeCardForm.addEventListener('submit', (event) => {
-    handleDeleteSubmit(cardElement, cardId, event);
-  });
+  // removeCardForm.addEventListener('submit', (event) => {
+  //   handleDeleteSubmit(cardElement, cardId, event);
+  // });
 };
 
 /* **********************    Кнопки вызова попапов   ********************** */
@@ -268,67 +289,6 @@ export const renderLoading = (isLoading, popup) => {
   }
 };
 
-// обработчик формы - Редактирование аватара
-// const handleAvatarFormSubmit = (str, event) => {
-//   renderLoading(true, popupAvatarEditElement);
-//   api.updateAvatar(avatarInput.value)
-//     .then((userData) => {
-//       avatarLogo.src = userData.avatar;
-//       // закрываем попап
-//       popupAvatar.close();
-//     })
-//     .catch((err) => console.log(err))
-//     .finally(() => {
-//       renderLoading(false, popupAvatarEditElement);
-//     });
-// };
-
-// popupAvatar.setEventListeners();
-// обработчик формы - Редактирование профиля
-// const handleProfileFormSubmit = (event) => {
-//   renderLoading(true, popupProfileEditElement);
-
-//   userInfo.setUserInfo(api, nameInput.value, jobInput.value);
-
-//   popupProfileEdit.close();
-
-// };
-
-// editProfileForm.addEventListener('submit', handleProfileFormSubmit);
-
-// обработчик формы - Новая карточка
-// const handleNewSubmit = (event) => {
-//   event.preventDefault();
-
-//   renderLoading(true, popupPlaceNewElement);
-//   addCard(placeInput.value, imageUrlInput.value)
-//     .then((cardData) => {
-//       const newCard = createCard(
-//         {n
-//           ...cardData,
-//           cardId: cardData._id,
-//           ownerId: cardData.owner._id,
-//         },
-//         currentUserId,
-//         handleLikeClick,
-//         handleDeleteClick
-//       );
-
-//       renderCard(newCard, 'start');
-
-//       // очищаем форму
-//       newPlaceForm.reset();
-
-//       // закрываем попап
-//       closePopup(popupPlaceNewElement);
-//     })
-//     .catch((err) => console.log(err))
-//     .finally(() => {
-//       renderLoading(false, popupPlaceNewElement);
-//     });
-// };
-
-// newPlaceForm.addEventListener('submit', handleNewSubmit);
 
 // Валидация форм
 export const validationConfig = {
