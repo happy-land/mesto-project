@@ -122,7 +122,7 @@ const popupAddCard = new PopupWithForm(popupPlaceNewSelector, {
     // console.log(popupAddCard.formData);
     // formData.place = 123
     // formData.imagelink = http://otpuskthai.ru/wp-content/uploads/2014/02/ramboutan.jpg
-    console.log('currentUserId = ' + currentUserId);
+    //console.log('currentUserId = ' + currentUserId);
     api
       .addCard(placeInput.value, imageUrlInput.value)
       .then((cardData) => {
@@ -169,11 +169,16 @@ popupAddCard.setEventListeners();
 
 const popupRemoveCard = new PopupWithForm(popupRemoveCardSelector, {
   submit: (card) => {
-    console.log('popupRemoveCard + card._id' + card._id);
-
-  }
+    api.deleteCard(card._id)
+      .then((res) => {
+        card.element().closest('.card').remove();
+        card.element().remove();
+        popupRemoveCard.close();
+      })
+      .catch((err) => console.log(err));
+    }
 });
-popupRemoveCard.setEventListeners();
+
 
 // редактирование аватара
 const handleMouseOver = () => {
@@ -248,11 +253,13 @@ const handleLikeClick = (card) => {
 const handleDeleteClick = (card) => {
   // openPopup(popupRemoveCardElement);
   popupRemoveCard.open();
-  popupRemoveCard.confirmDeleteCard(card);
+  popupRemoveCard.setEventListeners(card);
+  // popupRemoveCard.confirmDeleteCard(card);
   // обработчик формы - подтвердить удаление карточки
   // removeCardForm.addEventListener('submit', (event) => {
   //   handleDeleteSubmit(cardElement, cardId, event);
   // });
+  //console.log("handleDeleteClick card: ", card);
 };
 
 /* **********************    Кнопки вызова попапов   ********************** */

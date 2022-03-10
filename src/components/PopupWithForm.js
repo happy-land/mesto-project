@@ -21,18 +21,18 @@ export default class PopupWithForm extends Popup{
   //   this.formData = {};
   // }
   
-  setEventListeners() {
+  setEventListeners(card) {
     super.setEventListeners();
 
     this._getInputValues();
 
     this._formElement.addEventListener('submit', (evt) => {
       evt.preventDefault();
-      console.log('внутри addEventListener this= ' + this);
+      //console.log('внутри addEventListener this= ' + this);
 
-      console.log('внутри addEventListener evt.target= ' + evt.target);
+      //console.log('внутри addEventListener evt.target= ' + evt.target);
       this._getInputValues();
-      this._submit();
+      this._submit(card);
     });
   }
 
@@ -41,9 +41,10 @@ export default class PopupWithForm extends Popup{
     this._formElement.reset();
   }
 
-  confirmDeleteCard(card) {
-    this._submit(card);
-  }
+  // confirmDeleteCard(card) {
+  //   //console.log("confirmDeleteCard card ", card);
+  //   this._submit(card);
+  // }
 
   _getInputValues() {
     const formInputList = this._formElement.querySelectorAll('.popup__input');
