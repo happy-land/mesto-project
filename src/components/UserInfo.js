@@ -1,3 +1,5 @@
+import { renderLoading } from "../utils/utils";
+
 export default class UserInfo {
   constructor(userName, userDescription) {
     this.userName = userName;
@@ -8,15 +10,13 @@ export default class UserInfo {
     return api
       .getUser()
       .then((user) => {
-
         this.name = user.name;
         this.about = user.about;
-        console.log(this);
       })
       .catch((error) => console.log('Error: ', error));
   }
 
-  setUserInfo(api, name, about) {
+  setUserInfo(api, name, about, popup) {
     api
       .updateProfile(name, about)
       .then((userData) => {
@@ -25,7 +25,7 @@ export default class UserInfo {
       })
       .catch((err) => console.log(err))
       .finally(() => {
-        // renderLoading(false, popupProfileEditElement);
+        renderLoading(false, popup)
       });
   }
 }

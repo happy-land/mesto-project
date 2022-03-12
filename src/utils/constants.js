@@ -1,18 +1,10 @@
-// Popup элементы
-export const popupProfileEditElement = document.querySelector('.popup_type_profile-edit');
-export const popupPlaceNewElement = document.querySelector('.popup_type_place-new');
-export const popupAvatarEditElement = document.querySelector('.popup_type_avatar-edit');
-export const popupRemoveCardElement = document.querySelector('.popup_type_remove-card');
 // селекторы попапов
 export const popupProfileEditSelector = '.popup_type_profile-edit';
 export const popupPlaceNewSelector = '.popup_type_place-new';
 export const popupAvatarEditSelector = '.popup_type_avatar-edit';
 export const popupRemoveCardSelector = '.popup_type_remove-card';
 
-
-
 export const popupImageSelector = '.popup_type_photo-view';
-
 
 export const photoContainerSelector = '.popup__container';
 export const photoViewSelector = '.photo-view';
@@ -41,8 +33,6 @@ export const jobInput = editProfileForm.elements.description;
 export const newPlaceForm = document.forms.newplaceform;
 export const placeInput = newPlaceForm.elements.place;
 export const imageUrlInput = newPlaceForm.elements.imagelink;
-// Форма - подтвердить удаление карточки
-export const removeCardForm = document.forms.removecardform;
 
 // Popup элементы
 export const popupPhotoViewElement = document.querySelector('.popup_type_photo-view');
@@ -55,8 +45,6 @@ export const titleElement = photoViewElement.querySelector('.photo-view__title')
 // Шаблон карточки - берем из html
 export const cardListSelector = '.content__cards';
 export const cardTemplate = '#card-template';
-export const cardsContainer = document.querySelector('.cards');
-
 
 // Валидация форм
 export const validationConfig = {

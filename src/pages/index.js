@@ -1,19 +1,19 @@
-import Api from '../components/api.js';
+import Api from '../components/Api.js';
 import Section from '../components/Section.js';
 import Card from '../components/Card.js';
 import PopupWithImage from '../components/PopupWithImage.js';
 import PopupWithForm from '../components/PopupWithForm.js';
 import PopupConfirm from '../components/PopupConfirm.js';
-
 import UserInfo from '../components/UserInfo.js';
-import { inputFieldStateCheck } from '../utils/utils.js';
-// import { openPopup, closePopup, updateSubmitButtonState } from '../components/modal.js';
-// import { enableValidation } from '../components/validate.js';
+import FormValidator from '../components/FormValidator.js';
+
 import {
-  popupProfileEditElement,
-  popupPlaceNewElement,
-  popupAvatarEditElement,
-  popupRemoveCardElement,
+  inputFieldStateCheck,
+  updateSubmitButtonState,
+  renderLoading,
+} from '../utils/utils.js';
+
+import {
   popupProfileEditSelector, // '.popup_type_profile-edit'
   popupPlaceNewSelector, // '.popup_type_place-new'
   popupAvatarEditSelector, // '.popup_type_avatar-edit'
@@ -34,15 +34,12 @@ import {
   newPlaceForm,
   placeInput,
   imageUrlInput,
-  removeCardForm,
   cardTemplate,
-  cardsContainer,
   cardListSelector,
-  validationConfig
+  validationConfig,
 } from '../utils/constants.js';
 
 import '../pages/index.css';
-import FormValidator from '../components/FormValidator.js';
 
 // Создаем обьект Api
 const api = new Api({
@@ -55,8 +52,6 @@ const api = new Api({
 
 // id текущего пользователя
 let currentUserId;
-
-
 
 // создаем объект section класса Section
 const section = new Section(
@@ -79,7 +74,7 @@ popupImage.setEventListeners();
 // попапы с формой
 const popupAvatar = new PopupWithForm(popupAvatarEditSelector, {
   submit: () => {
-    renderLoading(true, popupAvatarEditElement);
+    renderLoading(true, popupAvatar);
     api
       .updateAvatar(avatarInput.value)
       .then((userData) => {
@@ -89,7 +84,7 @@ const popupAvatar = new PopupWithForm(popupAvatarEditSelector, {
       })
       .catch((err) => console.log(err))
       .finally(() => {
-        renderLoading(false, popupAvatarEditElement);
+        renderLoading(false, popupAvatar);
       });
   },
 });
@@ -97,7 +92,8 @@ popupAvatar.setEventListeners();
 
 const popupProfileEdit = new PopupWithForm(popupProfileEditSelector, {
   submit: () => {
-    userInfo.setUserInfo(api, nameInput.value, jobInput.value);
+    renderLoading(true, popupProfileEdit);
+    userInfo.setUserInfo(api, nameInput.value, jobInput.value, popupProfileEdit);
     popupProfileEdit.close();
   },
 });
@@ -105,22 +101,22 @@ popupProfileEdit.setEventListeners();
 
 const popupAddCard = new PopupWithForm(popupPlaceNewSelector, {
   submit: () => {
+    renderLoading(true, popupAddCard);
     api
       .addCard(placeInput.value, imageUrlInput.value)
       .then((cardData) => {
         section.addItem(createCard(cardData), 'start');
-
+        
         // закрываем попап
         popupAddCard.close();
       })
       .catch((err) => console.log('popupAddCard: ' + err))
       .finally(() => {
-        // renderLoading(false, popupAddCard);
+        renderLoading(false, popupAddCard);
       });
   },
 });
 popupAddCard.setEventListeners();
-
 
 const popupRemoveCard = new PopupConfirm(popupRemoveCardSelector);
 popupRemoveCard.setEventListeners();
@@ -134,20 +130,30 @@ const createCard = (cardData) => {
       handleDeleteClick: () => {
         popupRemoveCard.open();
         popupRemoveCard.setSubmitHandler(() => {
-          api.deleteCard(card.id())
+          api
+            .deleteCard(card.id())
             .then(() => {
               card.element().remove();
               popupRemoveCard.close();
             })
-            .catch((err) => console.log(err))
-        })
-      }
+            .catch((err) => console.log(err));
+        });
+      },
     },
     currentUserId,
     cardTemplate
   );
   return card.getView();
-}
+};
+
+// валидация
+const avatarValidator = new FormValidator(validationConfig, editAvatarForm);
+const profileValidator = new FormValidator(validationConfig, editProfileForm);
+const newPlaceValidator = new FormValidator(validationConfig, newPlaceForm);
+
+avatarValidator.enableValidation();
+profileValidator.enableValidation();
+newPlaceValidator.enableValidation();
 
 // редактирование аватара
 const handleMouseOver = () => {
@@ -209,9 +215,9 @@ const handleLikeClick = (card) => {
 /* **********************    Кнопки вызова попапов   ********************** */
 
 editAvatarIcon.addEventListener('click', () => {
-  inputFieldStateCheck(popupAvatarEditElement);
   popupAvatar.open();
-  // updateSubmitButtonState(popupAvatarEditElement);
+  inputFieldStateCheck(popupAvatar, avatarValidator);
+  updateSubmitButtonState(popupAvatar, avatarValidator);
 });
 
 editProfileButton.addEventListener('click', () => {
@@ -221,29 +227,12 @@ editProfileButton.addEventListener('click', () => {
   nameInput.value = userInfo.name;
   jobInput.value = userInfo.about;
 
-  // inputFieldStateCheck(popupProfileEditElement);
-  // updateSubmitButtonState(popupProfileEditElement);
+  inputFieldStateCheck(popupProfileEdit, profileValidator);
+  updateSubmitButtonState(popupProfileEdit, profileValidator);
 });
 
 addPlaceButtonElement.addEventListener('click', () => {
   popupAddCard.open();
-  // updateSubmitButtonState(popupPlaceNewElement);
+  inputFieldStateCheck(popupAddCard, newPlaceValidator);
+  updateSubmitButtonState(popupAddCard, newPlaceValidator);
 });
-
-// перенести в utils.js
-export const renderLoading = (isLoading, popup) => {
-  const button = popup.querySelector('.popup__button');
-  if (isLoading) {
-    button.textContent = 'Сохранение...';
-  } else {
-    button.textContent = 'Сохранить';
-  }
-};
-
-const avatarValidator = new FormValidator(validationConfig, editAvatarForm);
-const profileValidator = new FormValidator(validationConfig, editProfileForm);
-const newPlaceValidator = new FormValidator(validationConfig, newPlaceForm);
-
-avatarValidator.enableValidation();
-profileValidator.enableValidation();
-newPlaceValidator.enableValidation();
