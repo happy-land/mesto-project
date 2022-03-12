@@ -1,17 +1,10 @@
 export default class Card {
-  constructor(
-    { name, link, likes, _id, owner },
-    userId,
-    handleCardClick,
-    handleLikeClick,
-    handleDeleteClick,
-    cardSelector
-  ) {
-    this._id = _id;
-    this._title = name;
-    this._image = link;
-    this._likes = likes;
-    this._ownerId = owner._id;
+  constructor({ cardData, handleCardClick, handleLikeClick, handleDeleteClick }, userId, cardSelector) {
+    this._id = cardData._id;
+    this._title = cardData.name;
+    this._image = cardData.link;
+    this._likes = cardData.likes;
+    this._ownerId = cardData.owner._id;
 
     this._userId = userId;
 
@@ -21,6 +14,7 @@ export default class Card {
 
     this._cardSelector = cardSelector;
   }
+
 
   getView() {
     this._element = this._getTemplate();
@@ -42,7 +36,7 @@ export default class Card {
     this._element.remove();
     this._element = null;
   }
-  
+
   element() {
     return this._element;
   }

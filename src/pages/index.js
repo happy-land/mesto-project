@@ -3,6 +3,7 @@ import Section from '../components/Section.js';
 import Card from '../components/Card.js';
 import PopupWithImage from '../components/PopupWithImage.js';
 import PopupWithForm from '../components/PopupWithForm.js';
+import PopupConfirm from '../components/PopupConfirm.js';
 
 import UserInfo from '../components/UserInfo.js';
 import { inputFieldStateCheck } from '../utils/utils.js';
@@ -53,22 +54,15 @@ const api = new Api({
 // id текущего пользователя
 let currentUserId;
 
+
+
 // создаем объект section класса Section
 const section = new Section(
   {
     // Отрисовка каждого отдельного элемента функцией renderer
     // cardData - отдельная карточка (со свойствами link, name...)
     renderer: (cardData) => {
-      const card = new Card(
-        cardData,
-        currentUserId,
-        handleCardClick,
-        handleLikeClick,
-        handleDeleteClick,
-        cardTemplate
-      );
-      const cardElement = card.getView();
-      section.addItem(cardElement);
+      section.addItem(createCard(cardData));
     },
   },
   cardListSelector
@@ -81,13 +75,6 @@ const popupImage = new PopupWithImage(popupImageSelector);
 popupImage.setEventListeners();
 
 // попапы с формой
-
-// было:
-// const popupAvatar = new PopupWithForm(popupAvatarEditSelector, (evt) => {
-//   handleAvatarFormSubmit(evt);
-// });
-
-// стало:
 const popupAvatar = new PopupWithForm(popupAvatarEditSelector, {
   submit: () => {
     renderLoading(true, popupAvatarEditElement);
@@ -122,30 +109,15 @@ const popupAddCard = new PopupWithForm(popupPlaceNewSelector, {
     // console.log(popupAddCard.formData);
     // formData.place = 123
     // formData.imagelink = http://otpuskthai.ru/wp-content/uploads/2014/02/ramboutan.jpg
-    //console.log('currentUserId = ' + currentUserId);
     api
       .addCard(placeInput.value, imageUrlInput.value)
       .then((cardData) => {
-        const newCard = new Card(
-          {
-            ...cardData,
-            cardId: cardData._id,
-            ownerId: cardData.owner._id,
-          },
-          currentUserId,
-          handleCardClick,
-          handleLikeClick,
-          handleDeleteClick,
-          cardTemplate
-        );
-
-        const cardElement = newCard.getView();
-        section.addItem(cardElement, 'start');
+        section.addItem(createCard(cardData), 'start');
 
         // закрываем попап
         popupAddCard.close();
       })
-      .catch((err) => console.log(err))
+      .catch((err) => console.log('popupAddCard: ' + err))
       .finally(() => {
         // renderLoading(false, popupAddCard);
       });
@@ -154,30 +126,32 @@ const popupAddCard = new PopupWithForm(popupPlaceNewSelector, {
 popupAddCard.setEventListeners();
 
 
-// const handleDeleteSubmit = (cardElement, cardId, event) => {
-//   event.preventDefault();
+const popupRemoveCard = new PopupConfirm(popupRemoveCardSelector);
+popupRemoveCard.setEventListeners();
 
-//   deleteCard(cardId)
-//     .then((res) => {
-//       cardElement.closest('.card').remove();
-//       card.remove();
-//       closePopup(popupRemoveCardElement);
-//     })
-//     .catch((err) => console.log(err));
-// };
-
-
-const popupRemoveCard = new PopupWithForm(popupRemoveCardSelector, {
-  submit: (card) => {
-    api.deleteCard(card._id)
-      .then((res) => {
-        card.element().closest('.card').remove();
-        card.element().remove();
-        popupRemoveCard.close();
-      })
-      .catch((err) => console.log(err));
-    }
-});
+const createCard = (cardData) => {
+  const card = new Card(
+    {
+      cardData,
+      handleCardClick,
+      handleLikeClick,
+      handleDeleteClick: () => {
+        popupRemoveCard.open();
+        popupRemoveCard.setSubmitHandler(() => {
+          api.deleteCard(card.id())
+            .then(() => {
+              card.element().remove();
+              popupRemoveCard.close();
+            })
+            .catch((err) => console.log(err))
+        })
+      }
+    },
+    currentUserId,
+    cardTemplate
+  );
+  return card.getView();
+}
 
 
 // редактирование аватара
@@ -207,7 +181,6 @@ api
   .catch((err) => console.log('ОШИБКА --- ' + err));
 
 const handleCardClick = (card, title, image) => {
-  const cardElement = card.element();
   popupImage.open(title, image);
 };
 
@@ -236,30 +209,6 @@ const handleLikeClick = (card) => {
       })
       .catch((err) => console.log(err));
   }
-};
-
-// const handleDeleteSubmit = (cardElement, cardId, event) => {
-//   event.preventDefault();
-
-//   deleteCard(cardId)
-//     .then((res) => {
-//       cardElement.closest('.card').remove();
-//       card.remove();
-//       closePopup(popupRemoveCardElement);
-//     })
-//     .catch((err) => console.log(err));
-// };
-
-const handleDeleteClick = (card) => {
-  // openPopup(popupRemoveCardElement);
-  popupRemoveCard.open();
-  popupRemoveCard.setEventListeners(card);
-  // popupRemoveCard.confirmDeleteCard(card);
-  // обработчик формы - подтвердить удаление карточки
-  // removeCardForm.addEventListener('submit', (event) => {
-  //   handleDeleteSubmit(cardElement, cardId, event);
-  // });
-  //console.log("handleDeleteClick card: ", card);
 };
 
 /* **********************    Кнопки вызова попапов   ********************** */
@@ -295,7 +244,6 @@ export const renderLoading = (isLoading, popup) => {
     button.textContent = 'Сохранить';
   }
 };
-
 
 // Валидация форм
 export const validationConfig = {
