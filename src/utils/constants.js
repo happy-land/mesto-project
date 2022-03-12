@@ -27,7 +27,7 @@ export const editAvatarIcon = document.querySelector('.profile__edit-avatar');
 export const addPlaceButtonElement = document.querySelector('.profile__add-button');
 // Сохраним в переменные значения полей из профиля - аватар, имя пользователя и описание
 export const profileAvatar = document.querySelector('.profile__avatar');
-export   const inputAvatar = document.querySelector('#avatar-input');
+export const inputAvatar = document.querySelector('#avatar-input');
 export const profileUsername = document.querySelector('.profile__username');
 export const profileDescription = document.querySelector('.profile__description');
 // Форма редактирования аватара
@@ -56,3 +56,14 @@ export const titleElement = photoViewElement.querySelector('.photo-view__title')
 export const cardListSelector = '.content__cards';
 export const cardTemplate = '#card-template';
 export const cardsContainer = document.querySelector('.cards');
+
+
+// Валидация форм
+export const validationConfig = {
+  formSelector: '.popup__form',
+  inputSelector: '.popup__input',
+  submitButtonSelector: '.popup__button',
+  inactiveButtonClass: 'popup__button_disabled',
+  inputErrorClass: 'popup__input_type_error',
+  errorClass: 'popup__error_visible',
+};

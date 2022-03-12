@@ -8,7 +8,7 @@ import PopupConfirm from '../components/PopupConfirm.js';
 import UserInfo from '../components/UserInfo.js';
 import { inputFieldStateCheck } from '../utils/utils.js';
 // import { openPopup, closePopup, updateSubmitButtonState } from '../components/modal.js';
-import { enableValidation } from '../components/validate.js';
+// import { enableValidation } from '../components/validate.js';
 import {
   popupProfileEditElement,
   popupPlaceNewElement,
@@ -38,9 +38,11 @@ import {
   cardTemplate,
   cardsContainer,
   cardListSelector,
+  validationConfig
 } from '../utils/constants.js';
 
 import '../pages/index.css';
+import FormValidator from '../components/FormValidator.js';
 
 // Создаем обьект Api
 const api = new Api({
@@ -101,14 +103,8 @@ const popupProfileEdit = new PopupWithForm(popupProfileEditSelector, {
 });
 popupProfileEdit.setEventListeners();
 
-// const popupAddCard = new PopupWithForm(popupPlaceNewSelector, handleNewSubmit);
-// popupAddCard.setEventListeners();
-
 const popupAddCard = new PopupWithForm(popupPlaceNewSelector, {
   submit: () => {
-    // console.log(popupAddCard.formData);
-    // formData.place = 123
-    // formData.imagelink = http://otpuskthai.ru/wp-content/uploads/2014/02/ramboutan.jpg
     api
       .addCard(placeInput.value, imageUrlInput.value)
       .then((cardData) => {
@@ -152,7 +148,6 @@ const createCard = (cardData) => {
   );
   return card.getView();
 }
-
 
 // редактирование аватара
 const handleMouseOver = () => {
@@ -245,14 +240,10 @@ export const renderLoading = (isLoading, popup) => {
   }
 };
 
-// Валидация форм
-export const validationConfig = {
-  formSelector: '.popup__form',
-  inputSelector: '.popup__input',
-  submitButtonSelector: '.popup__button',
-  inactiveButtonClass: 'popup__button_disabled',
-  inputErrorClass: 'popup__input_type_error',
-  errorClass: 'popup__error_visible',
-};
+const avatarValidator = new FormValidator(validationConfig, editAvatarForm);
+const profileValidator = new FormValidator(validationConfig, editProfileForm);
+const newPlaceValidator = new FormValidator(validationConfig, newPlaceForm);
 
-enableValidation(validationConfig);
+avatarValidator.enableValidation();
+profileValidator.enableValidation();
+newPlaceValidator.enableValidation();
