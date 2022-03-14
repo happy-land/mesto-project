@@ -29,7 +29,8 @@ export default class FormValidator {
   }
 
   _setEventListenersValidate() {
-    const inputList = Array.from(this._formElement.querySelectorAll(this._inputSelector));
+    this._inputCollection = this._formElement.querySelectorAll(this._inputSelector);
+    this._inputList = Array.from(this._inputCollection);
 
     // Найдём в текущей форме кнопку отправки
     const buttonElement = this._formElement.querySelector(this._submitButtonSelector);
