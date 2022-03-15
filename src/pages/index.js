@@ -65,7 +65,7 @@ const section = new Section(
   cardListSelector
 );
 
-const userInfo = new UserInfo(profileUsername, profileDescription);
+const userInfo = new UserInfo(profileUsername, profileDescription, avatarLogo);
 
 // попап - открыть картинку
 const popupImage = new PopupWithImage(popupImageSelector);
