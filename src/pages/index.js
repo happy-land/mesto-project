@@ -216,8 +216,9 @@ const handleLikeClick = (card) => {
 
 editAvatarIcon.addEventListener('click', () => {
   popupAvatar.open();
-  inputFieldStateCheck(popupAvatar, avatarValidator);
-  updateSubmitButtonState(popupAvatar, avatarValidator);
+  avatarValidator.resetValidation();
+  // inputFieldStateCheck(popupAvatar, avatarValidator);
+  // updateSubmitButtonState(popupAvatar, avatarValidator);
 });
 
 editProfileButton.addEventListener('click', () => {
@@ -227,12 +228,15 @@ editProfileButton.addEventListener('click', () => {
   nameInput.value = userInfo.name;
   jobInput.value = userInfo.about;
 
-  inputFieldStateCheck(popupProfileEdit, profileValidator);
-  updateSubmitButtonState(popupProfileEdit, profileValidator);
+  profileValidator.resetValidation();
+
+  // inputFieldStateCheck(popupProfileEdit, profileValidator);
+  // updateSubmitButtonState(popupProfileEdit, profileValidator);
 });
 
 addPlaceButtonElement.addEventListener('click', () => {
   popupAddCard.open();
-  inputFieldStateCheck(popupAddCard, newPlaceValidator);
-  updateSubmitButtonState(popupAddCard, newPlaceValidator);
+  newPlaceValidator.resetValidation();
+  // inputFieldStateCheck(popupAddCard, newPlaceValidator);
+  // updateSubmitButtonState(popupAddCard, newPlaceValidator);
 });

@@ -18,6 +18,11 @@ export default class FormValidator {
     this._errorClass = errorClass;
 
     this._formElement = formElement;
+    this._inputCollection = this._formElement.querySelectorAll(this._inputSelector);
+    this._inputList = Array.from(this._inputCollection);
+    // Найдём в текущей форме кнопку отправки
+    this._buttonElement = this._formElement.querySelector(this._submitButtonSelector);
+
   }
 
   enableValidation() {
@@ -28,50 +33,50 @@ export default class FormValidator {
     this._setEventListenersValidate();
   }
 
+  resetValidation() {
+    this._toggleButtonState();
+    this._inputList.forEach((inputElement) => {
+      if (inputElement.classList.contains(this._inputErrorClass)) {
+        this._hideInputError(inputElement);
+      }
+    });
+  }
+
   _setEventListenersValidate() {
-    this._inputCollection = this._formElement.querySelectorAll(this._inputSelector);
-    this._inputList = Array.from(this._inputCollection);
-
-    // Найдём в текущей форме кнопку отправки
-    const buttonElement = this._formElement.querySelector(this._submitButtonSelector);
-
     // Вызовем toggleButtonState, чтобы не ждать ввода данных в поля
-    this.toggleButtonState(inputList, buttonElement);
+    this._toggleButtonState();
 
-    inputList.forEach((inputElement) => {
+    this._inputList.forEach((inputElement) => {
       inputElement.addEventListener('input', () => {
         this._checkInputValidity(inputElement);
-        this.toggleButtonState(inputList, buttonElement);
+        this._toggleButtonState();
       });
     });
-  };
+  }
 
-  toggleButtonState(inputList, buttonElement) {
-    if (this._hasInvalidInput(inputList)) {
-      buttonElement.classList.add(this._inactiveButtonClass);
-      buttonElement.disabled = true;
+  _toggleButtonState() {
+    if (this._hasInvalidInput()) {
+      this._buttonElement.classList.add(this._inactiveButtonClass);
+      this._buttonElement.disabled = true;
     } else {
-      buttonElement.classList.remove(this._inactiveButtonClass);
-      buttonElement.disabled = false;
+      this._buttonElement.classList.remove(this._inactiveButtonClass);
+      this._buttonElement.disabled = false;
     }
-  };
+  }
 
-  _hasInvalidInput(inputList) {
-    return inputList.some((inputElement) => {
+  _hasInvalidInput() {
+    return this._inputList.some((inputElement) => {
       return !inputElement.validity.valid;
     });
-  };
+  }
 
   _checkInputValidity(inputElement) {
     if (!inputElement.validity.valid) {
-      this._showInputError(
-        inputElement,
-        inputElement.validationMessage,
-      );
+      this._showInputError(inputElement, inputElement.validationMessage);
     } else {
-      this.hideInputError(inputElement);
+      this._hideInputError(inputElement);
     }
-  };
+  }
 
   _showInputError(inputElement, errorMessage) {
     const errorElement = this._formElement.querySelector(`.${inputElement.id}-error`);
@@ -81,12 +86,12 @@ export default class FormValidator {
     errorElement.classList.add(this._errorClass);
   }
 
-  hideInputError(inputElement) {
+  _hideInputError(inputElement) {
     const errorElement = this._formElement.querySelector(`.${inputElement.id}-error`);
     inputElement.classList.remove(this._inputErrorClass);
-  
+
     errorElement.classList.remove(this._errorClass);
-  
+
     errorElement.textContent = '';
-  };
+  }
 }
