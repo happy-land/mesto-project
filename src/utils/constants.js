@@ -8,9 +8,6 @@ export const popupImageSelector = '.popup_type_photo-view';
 
 export const photoContainerSelector = '.popup__container';
 export const photoViewSelector = '.photo-view';
-// export const imageSelector = '.photo-view__image';
-// export const titleSelector = '.photo-view__title';
-
 
 // Кнопки
 export const editProfileButton = document.querySelector('.profile__edit-button');
@@ -36,11 +33,6 @@ export const imageUrlInput = newPlaceForm.elements.imagelink;
 
 // Popup элементы
 export const popupPhotoViewElement = document.querySelector('.popup_type_photo-view');
-// const popupContainer = popupPhotoViewElement.querySelector('.popup__container');
-// const photoViewElement = popupContainer.querySelector('.photo-view');
-// export const imageElement = photoViewElement.querySelector('.photo-view__image');
-// export const titleElement = photoViewElement.querySelector('.photo-view__title');
-
 
 // Шаблон карточки - берем из html
 export const cardListSelector = '.content__cards';
